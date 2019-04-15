@@ -1,0 +1,58 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>JKU LVA Service</title>
+
+
+
+
+</head>
+<body>
+
+<h1>JKU LVA Service</h1>
+
+<h2>Neue LVA anlegen</h1>
+
+<p>Bitte folgende Felder ausfüllen um eine neue LVA anzulegen:</p><br>
+
+<form action="neuer_service.jsp">
+
+	LVA-Bezeichnung: <br>
+	<input type="text" name="lva_bezeichnung"><br>
+	LVA-Nummer: <br>
+	<input type="text" name="lva_nummer"><br>
+	LVA-Leiter: <br>
+	<input type="text" name="lva_leiter"><br>
+	Anzahl Studierender: <br>
+	<input type="text" name="max_studierende"><br>
+	Raum: <br>
+	<input type="text" name="raum"><br>
+
+	<input type="submit" value="Senden">
+
+</form>
+
+<br>
+<br>
+
+<h2>Bestehende LVA verwalten</h2>
+
+<p>Bitte die LVA-Bezeichnung und die LVA-Nummer der zu ändernden LVA eingeben:</p><br>
+
+<form action="service_verwalten.jsp">
+
+	LVA-Bezeichnung: <br>
+	<input type="text" name="titel"><br>
+	LVA-Nummer: <br>
+	<input type="text" name="lva_nummer"><br>
+
+	<input type="submit" value="Senden">
+
+</form>
+
+
+</body>
+</html>
