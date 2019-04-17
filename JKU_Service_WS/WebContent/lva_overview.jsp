@@ -39,13 +39,13 @@
 				while (rs.next()) {
 		%>
 		<tr>
-			<td><%=rs.getString(1)%></td>
-			<td><%=rs.getString(2)%></td>
-			<td><%=rs.getString(3)%></td>
-			<td><%=rs.getString(4)%></td>
-			<td><%=rs.getString(5)%></td>
-			<td><a href="lva_delete.jsp?titel=<%=rs.getString(1)%>">Löschen</a></td>
-			<td><a href="lva_edit.jsp?titel=<%=rs.getString(1)%>">Bearbeiten</a></td>
+			<td><%=rs.getString(1)%><br><a href="lva_edit.jsp?lva_nummer=<%=rs.getString(2)%>&titel=<%=rs.getString(1)%>">Bearbeiten</a></td>
+			<td><%=rs.getString(2)%><br><a href="lva_edit.jsp?lva_nummer=<%=rs.getString(2)%>">Bearbeiten</a></td>
+			<td><%=rs.getString(3)%><br><a href="lva_edit.jsp?lva_nummer=<%=rs.getString(2)%>&leiter=<%=rs.getString(3)%>">Bearbeiten</a></td>
+			<td><%=rs.getString(4)%><br><a href="lva_edit.jsp?lva_nummer=<%=rs.getString(2)%>&max_studierende=<%=rs.getString(4)%>">Bearbeiten</a></td>
+			<td><%=rs.getString(5)%><br><a href="lva_edit.jsp?lva_nummer=<%=rs.getString(2)%>&raum=<%=rs.getString(5)%>">Bearbeiten</a></td>
+			<td><a href="lva_delete.jsp?lva_nummer=<%=rs.getString(2)%>">Löschen</a></td>
+			
 		</tr>
 		<%
 			}
