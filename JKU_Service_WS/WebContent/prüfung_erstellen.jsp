@@ -6,32 +6,29 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>LVA bearbeiten</title>
+<title>Prüfung anlegen</title>
 </head>
 <body>
-	<h1>LVA bearbeiten</h1>
 
 	<table border=1>
 		<tr>
-			<th>Bezeichnung</th>
+			<th>LVA Titel</th>
 			<th>LVA Nummer</th>
-			<th>LVA Leiter</th>
-			<th>Max. Anzahl Studierender</th>
-			<th>Raum</th>
-			<th>Datum</th>
-			<th>Uhrzeit von</th>
-			<th>Uhrzeit bis</th>
+			<th>Prüfungstermin</th>
+			<th>Prüfungszeit</th>
+			<th>Hörsaal</th>
+			<th>Anzahl Plätze</th>
 		</tr>
 
 		<%
-			// Datenbankverbindung
+			//Datenbankverbindung
 			Class.forName("org.sqlite.JDBC");
 			Connection conn = DriverManager.getConnection(
 					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\ue2.db");
 
 			String lva_nummer = request.getParameter("lva_nummer");
 
-			String query = "SELECT titel, lva_nummer, leiter, max_studierende, raum, datum, von, bis FROM lva_service WHERE lva_nummer=?";
+			String query = "SELECT titel, lva_nummer, leiter FROM lva_service WHERE lva_nummer=?";
 
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -43,24 +40,21 @@
 
 				while (rs.next()) {
 		%>
+		
 		<tr>
-			<form method="post" action="lva_edit_update.jsp">
-				<td><input type="text" name="titel"
-					value="<%=rs.getString(1)%>"></td>
-				<td><input type="text" name="lva_nummer"
-					value="<%=rs.getString(2)%>"></td>
-				<td><input type="text" name="leiter"
-					value="<%=rs.getString(3)%>"></td>
-				<td><input type="text" name="max_studierende"
-					value="<%=rs.getString(4)%>"></td>
-				<td><input type="text" name="raum" value="<%=rs.getString(5)%>"></td>
-				<td><input type="text" name="datum"
-					value="<%=rs.getString(6)%>"></td>
-				<td><input type="text" name="von" value="<%=rs.getString(7)%>"></td>
-				<td><input type="text" name="bis" value="<%=rs.getString(8)%>"></td>
+			<form method="post" action="prüfung_insert.jsp">
+				<td><input type="text" name="titel" value="<%=rs.getString(1)%>" readonly></td>
+				<td><input type="text" name="lva_nummer" value="<%=rs.getString(2)%>" readonly></td>
+				<td><input type="text" name="termin" placeholder="12.04.2019"></td>
+				<td><input type="text" name="zeit" placeholder="12:30 - 13:30"></td>
+				<td><input type="text" name="raum" placeholder="HS 1"></td>
+				<td><input type="text" name="plaetze" placeholder="100"></td>
 				<td><input type="submit" value="Bestätigen"></td>
 			</form>
 		</tr>
+
+</table>
+
 
 
 		<%
@@ -95,11 +89,8 @@
 			}
 		%>
 
-	</table>
-	<br>
-	<br>
-	<a href="lva_overview.jsp">Zurück</a>
-
-
+		<br>
+		<br>
+		<a href="lva_overview.jsp">LVA Übersicht</a>
 </body>
 </html>

@@ -19,6 +19,9 @@
 			<th>LVA Leiter</th>
 			<th>Max. Anzahl Studierender</th>
 			<th>Raum</th>
+			<th>Datum</th>
+			<th>Uhrzeit von</th>
+			<th>Uhrzeit bis</th>
 		</tr>
 
 		<%
@@ -27,7 +30,7 @@
 			Connection conn = DriverManager.getConnection(
 					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\ue2.db");
 
-			String query = "SELECT titel, lva_nummer, leiter, max_studierende, raum FROM lva_service";
+			String query = "SELECT titel, lva_nummer, leiter, max_studierende, raum, datum, von, bis FROM lva_service";
 
 			Statement stmt = null;
 			ResultSet rs = null;
@@ -39,13 +42,18 @@
 				while (rs.next()) {
 		%>
 		<tr>
-			<td><%=rs.getString(1)%><br><a href="lva_edit.jsp?lva_nummer=<%=rs.getString(2)%>&titel=<%=rs.getString(1)%>">Bearbeiten</a></td>
-			<td><%=rs.getString(2)%><br><a href="lva_edit.jsp?lva_nummer=<%=rs.getString(2)%>">Bearbeiten</a></td>
-			<td><%=rs.getString(3)%><br><a href="lva_edit.jsp?lva_nummer=<%=rs.getString(2)%>&leiter=<%=rs.getString(3)%>">Bearbeiten</a></td>
-			<td><%=rs.getString(4)%><br><a href="lva_edit.jsp?lva_nummer=<%=rs.getString(2)%>&max_studierende=<%=rs.getString(4)%>">Bearbeiten</a></td>
-			<td><%=rs.getString(5)%><br><a href="lva_edit.jsp?lva_nummer=<%=rs.getString(2)%>&raum=<%=rs.getString(5)%>">Bearbeiten</a></td>
+			<td><%=rs.getString(1)%><br></td>
+			<td><%=rs.getString(2)%><br></td>
+			<td><%=rs.getString(3)%><br></td>
+			<td><%=rs.getString(4)%><br></td>
+			<td><%=rs.getString(5)%><br></td>
+			<td><%=rs.getString(6)%><br></td>
+			<td><%=rs.getString(7)%><br></td>
+			<td><%=rs.getString(8)%><br></td>
+			<td><a href="lva_edit.jsp?lva_nummer=<%=rs.getString(2)%>">Bearbeiten</a></td>
+			<td><a href="prüfung_erstellen.jsp?lva_nummer=<%=rs.getString(2)%>">Prüfung erstellen</a></td>
+			<td><a href="beurteilungen.jsp?lva_nummer=<%=rs.getString(2)%>">Noten eintragen</a></td>
 			<td><a href="lva_delete.jsp?lva_nummer=<%=rs.getString(2)%>">Löschen</a></td>
-			
 		</tr>
 		<%
 			}

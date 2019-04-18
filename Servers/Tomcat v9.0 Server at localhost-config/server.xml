@@ -51,6 +51,8 @@
     <Executor name="tomcatThreadPool" namePrefix="catalina-exec-"
         maxThreads="150" minSpareThreads="4"/>
     -->
+    
+   
 
 
     <!-- A "Connector" represents an endpoint by which requests are received
@@ -149,7 +151,7 @@
              Note: The pattern used is equivalent to using pattern="common" -->
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs" pattern="%h %l %u %t &quot;%r&quot; %s %b" prefix="localhost_access_log" suffix=".txt"/>
 
-      <Context docBase="JKU_Service_WS" path="/JKU_Service_WS" reloadable="true" source="org.eclipse.jst.jee.server:JKU_Service_WS"/><Context docBase="Matrikelnummer_Aufgabe9" path="/Matrikelnummer_Aufgabe9" reloadable="true" source="org.eclipse.jst.jee.server:Matrikelnummer_Aufgabe9"/></Host>
+      <Context docBase="JKU_Service_WS" path="/JKU_Service_WS" reloadable="true" source="org.eclipse.jst.jee.server:JKU_Service_WS"/></Host>
     </Engine>
   </Service>
 </Server>
