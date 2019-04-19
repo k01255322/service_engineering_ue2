@@ -13,6 +13,7 @@
 	<%
 		// Variablen
 		boolean exists = false;
+		boolean existsPrüfung = false;
 		//Datenbankverbindung
 		Class.forName("org.sqlite.JDBC");
 		Connection conn = DriverManager.getConnection(
@@ -20,6 +21,7 @@
 
 		String query = "INSERT INTO pruefungs_service (lva_titel, lva_nummer, datum, zeit, ort, anzahl_plaetze, anmeldungen) VALUES(?,?,?,?,?,?,0)";
 		String qRaum = "SELECT ID FROM raeume";
+		String qPrüfung = "SELECT lva_nummer FROM pruefungs_service";
 
 		PreparedStatement pstmt = null;
 		Statement st = null;
@@ -43,7 +45,17 @@
 				}
 			}
 
-			if (exists == true) {
+			rs.close();
+
+			rs = st.executeQuery(qPrüfung);
+			while (rs.next()) {
+				if (rs.getString(1).equals(lva_nummer)) {
+					existsPrüfung = true;
+					break;
+				}
+			}
+
+			if (exists == true && existsPrüfung == false) {
 				pstmt = conn.prepareStatement(query);
 				pstmt.setString(1, lva_bezeichnung);
 				pstmt.setString(2, lva_nummer);
@@ -56,8 +68,11 @@
 
 				out.println("Prüfung für die LVA " + lva_bezeichnung + " (" + lva_nummer
 						+ ") wurde erfolgreich angelegt!");
-			} else {
+			} else if (exists == false) {
 				out.println("Der eingegebene Raum (" + raum + ") existiert nicht!");
+			} else {
+				out.println("Für diese LVA (" + lva_nummer + ") wurde bereits eine Prüfung angelegt!");
+
 			}
 
 		} catch (SQLException e) {

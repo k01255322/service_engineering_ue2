@@ -27,7 +27,7 @@
 		String lva_nummer = request.getParameter("lva_nummer");
 		String lva_bezeichnung = request.getParameter("lva_titel");
 
-		String queryStudent = "SELECT matrikelnummer, pruefung FROM studenten_liste WHERE matrikelnummer = ? AND lva_bezeichnung=?";
+		String queryStudent = "SELECT matrikelnummer, pruefung FROM studenten_liste WHERE matrikelnummer = ? AND lva_nummer=?";
 
 		String query = "UPDATE studenten_liste SET pruefung='angemeldet' WHERE matrikelnummer=? AND lva_nummer=?";
 

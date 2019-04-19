@@ -11,14 +11,21 @@
 <body>
 
 	<%
+		// Variablen
+		boolean existsRaum = false;
+	
 		//Datenbankverbindung
 		Class.forName("org.sqlite.JDBC");
 		Connection conn = DriverManager.getConnection(
 				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\ue2.db");
+		
+		String qRaum = "SELECT id FROM raeume";
 
 		String query = "UPDATE lva_service SET titel =?, lva_nummer=?, leiter=?, max_studierende=?, raum=? WHERE lva_nummer=?";
 
+		Statement stm = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		String lva_titel = request.getParameter("titel");
 		String lva_nummer = request.getParameter("lva_nummer");
@@ -44,6 +51,15 @@
 		}
 		**/
 		try {
+			stm = conn.createStatement();
+			rs = stm.executeQuery(qRaum);
+			
+			while(rs.next()) {
+				if(rs.getString(1).equals(raum)){
+					existsRaum = true;
+				} 
+			}
+			if ( existsRaum == true) {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, lva_titel);
 			pstmt.setString(2, lva_nummer);
@@ -59,7 +75,11 @@
 			pstmt.executeUpdate();
 
 			out.println("LVA wurde erfolgreich aktualisiert!");
-
+			existsRaum = false;
+			} else {
+				out.println("Der eingegeben Raum (" + raum + ") existiert nicht!");
+			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -70,6 +90,22 @@
 					;
 				}
 				pstmt = null;
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					;
+				}
+				rs = null;
+			}
+			if (stm != null) {
+				try {
+					stm.close();
+				} catch (SQLException e) {
+					;
+				}
+				stm = null;
 			}
 			if (conn != null) {
 				try {

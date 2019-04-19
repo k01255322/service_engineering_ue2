@@ -29,7 +29,7 @@
 			String lva_nummer = request.getParameter("lva_nummer");
 
 			String query = "SELECT titel, lva_nummer, leiter FROM lva_service WHERE lva_nummer=?";
-
+			
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 
