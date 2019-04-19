@@ -25,7 +25,7 @@
 		String matrikelnummer = request.getParameter("matrikelnummer");
 		String lva_bezeichnung = request.getParameter("titel");
 
-		String qMatrikelnummer = "SELECT matrikelnummer FROM studenten_liste";
+		String qStudent = "SELECT matrikelnummer, pruefung FROM studenten_liste";
 		String qPrüfung = "SELECT lva_titel FROM pruefungs_service";
 		String qAnmeldung = "SELECT lva_titel, lva_nummer, datum, zeit, ort, anzahl_plaetze, anmeldungen FROM pruefungs_service WHERE lva_titel=?";
 		Statement stm = null;
@@ -36,9 +36,9 @@
 
 		try {
 			stm = conn.createStatement();
-			rs1 = stm.executeQuery(qMatrikelnummer);
+			rs1 = stm.executeQuery(qStudent);
 			while (rs1.next()) {
-				if (rs1.getString("matrikelnummer").equals(matrikelnummer)) {
+				if (rs1.getString(1).equals(matrikelnummer)) {
 					existsMatrikel = true;
 					break;
 				}
@@ -71,6 +71,7 @@
 
 		<%
 			while (rs.next()) {
+				
 		%>
 		<tr>
 			<td><%=rs.getString(1)%><br></td>
@@ -80,17 +81,28 @@
 			<td><%=rs.getString(5)%><br></td>
 			<td><%=rs.getString(6)%><br></td>
 			<td><%=rs.getString(7)%><br></td>
+			
+			<% if(rs.getString(6).equals(rs.getString(7))) {
+				%>
+				<td>Anmeldung geschlossen</td>
+				<%} else { %>
+			
+			
 			<td><a
 				href="prüfungsservice_insert.jsp?lva_nummer=<%=rs.getString(2)%>
 				&matrikelnummer=<%=rs1.getString(1)%>
 				&lva_titel=<%=rs2.getString(1)%>">Anmelden</a></td>
+				<%} 
+				
+				%>
 			<td><a
 				href="prüfung_abmeldung.jsp?lva_nummer=<%=rs.getString(2)%>
 				&matrikelnummer=<%=rs1.getString(1)%>">Abmelden</a></td>
 		</tr>
 
 		<%
-			}
+				
+				}
 				} else if (existsMatrikel == false) {
 					out.println("Die eingegebene Matrikelnummer existiert nicht!");
 				} else {
@@ -112,6 +124,23 @@
 					}
 					rs = null;
 				}
+				if (rs1 != null) {
+					try {
+						rs1.close();
+					} catch (SQLException e) {
+						;
+					}
+					rs1 = null;
+				}
+				if (rs2 != null) {
+					try {
+						rs2.close();
+					} catch (SQLException e) {
+						;
+					}
+					rs2 = null;
+				}
+
 				if (pstm != null) {
 					try {
 						pstm.close();
