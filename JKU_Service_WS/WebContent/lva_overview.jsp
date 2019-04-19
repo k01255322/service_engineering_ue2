@@ -28,7 +28,7 @@
 			// Datenbankverbindung
 			Class.forName("org.sqlite.JDBC");
 			Connection conn = DriverManager.getConnection(
-					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\ue2.db");
+					"jdbc:sqlite:ue2.db");
 
 			String query = "SELECT titel, lva_nummer, leiter, max_studierende, raum, datum, von, bis FROM lva_service";
 

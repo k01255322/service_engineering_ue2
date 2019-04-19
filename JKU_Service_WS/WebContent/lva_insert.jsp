@@ -1,5 +1,6 @@
 <%@ page import="java.sql.*"%>
 <%@ page import="org.sqlite.*"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -24,27 +25,32 @@
 		Date datum = null;
 		Time von = null;
 		Time bis = null;
+		SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+		SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm");
 
 		if (request.getParameter("raum") != null && !request.getParameter("raum").equals("")) {
 			raum = request.getParameter("raum");
 		}
 
 		if (request.getParameter("datum") != null && !request.getParameter("datum").equals("")) {
-			datum = Date.valueOf(request.getParameter("datum"));
+			java.util.Date parsedate = formatter.parse(request.getParameter("datum"));
+			datum = new java.sql.Date(parsedate.getTime());
 		}
 
 		if (request.getParameter("von") != null && !request.getParameter("von").equals("")) {
-			von = Time.valueOf(request.getParameter("von"));
+			long ms = formatter2.parse(request.getParameter("von")).getTime();
+			von = new Time(ms);
 		}
 
 		if (request.getParameter("bis") != null && !request.getParameter("bis").equals("")) {
-			bis = Time.valueOf(request.getParameter("bis"));
+			long ms = formatter2.parse(request.getParameter("bis")).getTime();
+			bis = new Time(ms);
 		}
 
 		// Datenbankverbindung
 		Class.forName("org.sqlite.JDBC");
 		Connection conn = DriverManager.getConnection(
-				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\ue2.db");
+				"jdbc:sqlite:C:\\Users\\simon\\Documents\\Vorlesungen\\ServiceEngineering\\service_engineering_ue2\\ue2.db");
 		Statement stat = conn.createStatement();
 
 		String qLva = "SELECT lva_nummer FROM lva_service";
