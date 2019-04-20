@@ -15,7 +15,8 @@
 			<th>LVA Titel</th>
 			<th>LVA Nummer</th>
 			<th>Prüfungstermin</th>
-			<th>Prüfungszeit</th>
+			<th>von</th>
+			<th>bis</th>
 			<th>Hörsaal</th>
 			<th>Anzahl Plätze</th>
 		</tr>
@@ -24,7 +25,7 @@
 			//Datenbankverbindung
 			Class.forName("org.sqlite.JDBC");
 			Connection conn = DriverManager.getConnection(
-					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\ue2.db");
+					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
 
 			String lva_nummer = request.getParameter("lva_nummer");
 
@@ -45,8 +46,9 @@
 			<form method="post" action="prüfung_insert.jsp">
 				<td><input type="text" name="titel" value="<%=rs.getString(1)%>" readonly></td>
 				<td><input type="text" name="lva_nummer" value="<%=rs.getString(2)%>" readonly></td>
-				<td><input type="text" name="termin" placeholder="12.04.2019"></td>
-				<td><input type="text" name="zeit" placeholder="12:30 - 13:30"></td>
+				<td><input type="text" name="datum" placeholder="2019-12-31"></td>
+				<td><input type="text" name="von" placeholder="12:30"></td>
+				<td><input type="text" name="bis" placeholder="14:30"></td>
 				<td><input type="text" name="raum" placeholder="HS 1"></td>
 				<td><input type="text" name="plaetze" placeholder="100"></td>
 				<td><input type="submit" value="Bestätigen"></td>

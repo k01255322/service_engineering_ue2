@@ -23,7 +23,7 @@
 			// Datenbankverbindung
 			Class.forName("org.sqlite.JDBC");
 			Connection conn = DriverManager.getConnection(
-					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\ue2.db");
+					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
 
 			String query = "SELECT vorname, nachname, matrikelnummer, lva_nummer FROM studenten_liste WHERE lva_nummer=? AND pruefung = 'angemeldet'";
 

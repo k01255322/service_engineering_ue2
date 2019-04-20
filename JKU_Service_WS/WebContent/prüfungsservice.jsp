@@ -20,14 +20,14 @@
 		//Datenbankverbindung
 		Class.forName("org.sqlite.JDBC");
 		Connection conn = DriverManager.getConnection(
-				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\ue2.db");
+				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
 
 		String matrikelnummer = request.getParameter("matrikelnummer");
 		String lva_bezeichnung = request.getParameter("titel");
 
 		String qStudent = "SELECT matrikelnummer, pruefung FROM studenten_liste";
 		String qPrüfung = "SELECT lva_titel FROM pruefungs_service";
-		String qAnmeldung = "SELECT lva_titel, lva_nummer, datum, zeit, ort, anzahl_plaetze, anmeldungen FROM pruefungs_service WHERE lva_titel=?";
+		String qAnmeldung = "SELECT lva_titel, lva_nummer, datum, von, bis, ort, anzahl_plaetze, anmeldungen FROM pruefungs_service WHERE lva_titel=?";
 		Statement stm = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
@@ -63,7 +63,8 @@
 			<th>LVA Bezeichnung</th>
 			<th>LVA Nummer</th>
 			<th>Prüfungsdatum</th>
-			<th>Prüfungszeit</th>
+			<th>Von</th>
+			<th>Bis</th>
 			<th>Raum</th>
 			<th>max. Teilnehmerzahl</th>
 			<th>Anmeldungen</th>
@@ -81,6 +82,7 @@
 			<td><%=rs.getString(5)%><br></td>
 			<td><%=rs.getString(6)%><br></td>
 			<td><%=rs.getString(7)%><br></td>
+			<td><%=rs.getString(8)%><br></td>
 			
 			<% if(rs.getString(6).equals(rs.getString(7))) {
 				%>

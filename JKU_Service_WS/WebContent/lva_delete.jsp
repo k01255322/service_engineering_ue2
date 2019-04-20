@@ -13,7 +13,7 @@
 //Datenbankverbindung
 			Class.forName("org.sqlite.JDBC");
 			Connection conn = DriverManager.getConnection(
-					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\ue2.db");
+					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
 
 			String query = "DELETE FROM lva_service WHERE lva_nummer=?";
 

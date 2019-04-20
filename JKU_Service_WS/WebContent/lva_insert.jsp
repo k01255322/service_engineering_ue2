@@ -1,6 +1,8 @@
 <%@ page import="java.sql.*"%>
 <%@ page import="org.sqlite.*"%>
-<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.time.format.DateTimeFormatter"%>
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.time.LocalTime"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -15,47 +17,34 @@
 		// Variablen
 		boolean existsLva = false;
 		boolean existsRaum = false;
+		boolean checkGroesse = false;
+		boolean checkDatum = false;
+		int raumgroesse = 0;
 
 		// Abfrage der eingegebenen Daten
 		String lva_bezeichnung = request.getParameter("titel");
 		String lva_nummer = request.getParameter("lva_nummer");
 		String leiter = request.getParameter("leiter");
 		int max_studierende = Integer.parseInt(request.getParameter("max_studierende"));
-		String raum = null;
-		Date datum = null;
-		Time von = null;
-		Time bis = null;
-		SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-		SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm");
+		String raum = request.getParameter("raum");
 
-		if (request.getParameter("raum") != null && !request.getParameter("raum").equals("")) {
-			raum = request.getParameter("raum");
-		}
-
-		if (request.getParameter("datum") != null && !request.getParameter("datum").equals("")) {
-			java.util.Date parsedate = formatter.parse(request.getParameter("datum"));
-			datum = new java.sql.Date(parsedate.getTime());
-		}
-
-		if (request.getParameter("von") != null && !request.getParameter("von").equals("")) {
-			long ms = formatter2.parse(request.getParameter("von")).getTime();
-			von = new Time(ms);
-		}
-
-		if (request.getParameter("bis") != null && !request.getParameter("bis").equals("")) {
-			long ms = formatter2.parse(request.getParameter("bis")).getTime();
-			bis = new Time(ms);
-		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate datum = LocalDate.parse(request.getParameter("datum"), formatter);
+		DateTimeFormatter formatter2 = DateTimeFormatter.ISO_LOCAL_TIME;
+		LocalTime von = LocalTime.parse(request.getParameter("von"), formatter2);
+		LocalTime bis = LocalTime.parse(request.getParameter("bis"), formatter2);
 
 		// Datenbankverbindung
 		Class.forName("org.sqlite.JDBC");
 		Connection conn = DriverManager.getConnection(
-				"jdbc:sqlite:C:\\Users\\simon\\Documents\\Vorlesungen\\ServiceEngineering\\service_engineering_ue2\\ue2.db");
+				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
 		Statement stat = conn.createStatement();
 
 		String qLva = "SELECT lva_nummer FROM lva_service";
 
 		String qRaum = "SELECT * FROM raeume";
+
+		String qDatum = "SELECT * FROM raum_service";
 
 		String query = "INSERT INTO lva_service(titel, lva_nummer, leiter, max_studierende, raum, datum, von, bis) VALUES (?,?,?,?,?,?,?,?)";
 		PreparedStatement pst = null;
@@ -69,22 +58,70 @@
 			}
 		}
 
-		if (raum != null) {
-			rs = stat.executeQuery(qRaum);
-			while (rs.next()) {
-				if (rs.getString("id").equals(raum)) {
-					existsRaum = true;
+		rs = stat.executeQuery(qRaum);
+		while (rs.next()) {
+			if (rs.getString("id").equals(raum)) {
+				existsRaum = true;
+
+				if (rs.getInt("max_personen") < max_studierende) {
+					checkGroesse = true;
+					raumgroesse = rs.getInt("max_personen");
 					break;
+				}
+				break;
+			}
+		}
+		rs.close();
+
+		rs = stat.executeQuery(qDatum);
+		while (rs.next()) {
+			if ((rs.getObject("datum").toString().equals(datum.toString())) && (rs.getString("raum").equals(raum))) {
+				// Uhrzeitvergleich
+
+				if (rs.getObject("bis").toString().compareTo(von.toString()) > 0) {
+
+					if ((rs.getObject("von").toString().compareTo(von.toString()) <= 0)
+							&& (rs.getObject("von").toString().compareTo(bis.toString()) <= 0)) {
+						out.println("Der Raum " + raum + " ist am "  
+								+ datum + " von " + rs.getObject("von") + " bis " + rs.getObject("bis") 
+								+ " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
+						checkDatum = true;
+					}
+				}
+				if (rs.getObject("von").toString().compareTo(bis.toString()) > 0) {
+					if ((rs.getObject("bis").toString().compareTo(bis.toString()) <= 0)
+							&& (rs.getObject("bis").toString().compareTo(von.toString()) <= 0)) {
+						out.println("Der Raum " + raum + " ist am "  
+								+ datum + " von " + rs.getObject("von") + " bis " + rs.getObject("bis") 
+								+ " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
+						checkDatum = true;
+						;
+					}
+				}
+
+				if (((rs.getObject("von").toString().compareTo(von.toString()) > 0)
+						&& (rs.getObject("bis").toString().compareTo(bis.toString())) > 0)
+						&& (rs.getObject("von").toString().compareTo(bis.toString())) < 0) {
+					out.println("Der Raum " + raum + " ist am "  
+							+ datum + " von " + rs.getObject("von") + " bis " + rs.getObject("bis") 
+							+ " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
+					checkDatum = true;
 				}
 			}
 		}
+
+		rs.close();
 
 		if (existsLva == true) {
 			out.println("LVA ist bereits vorhanden und wurde nicht erneut angelegt!");
 			existsLva = false;
 		} else if (existsRaum == false) {
 			out.println("Der eingegebene Raum existiert nicht! Die LVA wurde nicht angelegt!");
-		} else {
+		} else if (checkGroesse == true) {
+			out.println("Die maximale Raumkapazität beträgt " + raumgroesse
+					+ ". Bitte geben Sie eine passende Größe an!");
+		} else if (checkDatum == false) {
+
 			try {
 				pst = conn.prepareStatement(query);
 
@@ -92,41 +129,22 @@
 				pst.setString(2, lva_nummer);
 				pst.setString(3, leiter);
 				pst.setInt(4, max_studierende);
-
-				/**
-					To-Do: 
-						Datums und Zeitformat beim Einfügen in DB
-						Abgleich von/bis, damit am selben Datum keine Überschneidungen im Raum sind
-				**/
-
-				if (raum != null) {
-					pst.setString(5, raum);
-				} else {
-					pst.setNull(5, java.sql.Types.VARCHAR);
-				}
-
-				if (datum != null) {
-					pst.setDate(6, datum);
-				} else {
-					pst.setNull(6, java.sql.Types.DATE);
-				}
-
-				if (von != null) {
-					pst.setTime(7, von);
-				} else {
-					pst.setNull(7, java.sql.Types.TIME);
-				}
-
-				if (bis != null) {
-					pst.setTime(8, bis);
-				} else {
-					pst.setNull(8, java.sql.Types.TIME);
-				}
+				pst.setString(5, raum);
+				pst.setObject(6, datum);
+				pst.setObject(7, von);
+				pst.setObject(8, bis);
 
 				pst.executeUpdate();
+				
+				
 
 				out.println("LVA mit der Nummer " + lva_nummer + " und der Bezeichnung " + lva_bezeichnung
 						+ " wurde erfolgreich angelegt!");
+				
+				/**
+				response.sendRedirect("raum_service.jsp?raum="+raum 
+						+ "&datum=" + datum + "&von="+von + "&bis=" +bis);
+				**/
 
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -162,6 +180,7 @@
 	%>
 	<br>
 	<br>
+	<a href="lva_insert.html">Zurück</a>
 	<a href="main_page.html">Hauptmenü</a>
 
 </body>

@@ -1,5 +1,8 @@
 <%@ page import="java.sql.*"%>
 <%@ page import="org.sqlite.*"%>
+<%@page import="java.time.format.DateTimeFormatter"%>
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.time.LocalTime"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -13,15 +16,20 @@
 	<%
 		// Variablen
 		boolean existsRaum = false;
-	
+		boolean checkGroesse = false;
+		boolean checkDatum = false;
+		int raumgroesse = 0;
+
 		//Datenbankverbindung
 		Class.forName("org.sqlite.JDBC");
 		Connection conn = DriverManager.getConnection(
-				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\ue2.db");
-		
-		String qRaum = "SELECT id FROM raeume";
+				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
 
-		String query = "UPDATE lva_service SET titel =?, lva_nummer=?, leiter=?, max_studierende=?, raum=? WHERE lva_nummer=?";
+		String qRaum = "SELECT * FROM raeume";
+
+		String qDatum = "SELECT * FROM raum_service";
+
+		String query = "UPDATE lva_service SET titel =?, lva_nummer=?, leiter=?, max_studierende=?, raum=?, datum=?, von=?, bis=? WHERE lva_nummer=?";
 
 		Statement stm = null;
 		PreparedStatement pstmt = null;
@@ -33,53 +41,101 @@
 		int max_studierende = Integer.parseInt(request.getParameter("max_studierende"));
 		String raum = request.getParameter("raum");
 
-		Date datum = null; //Date.valueOf(request.getParameter("datum"));
-		Time von = null;//Time.valueOf(request.getParameter("von"));
-		Time bis = null;//Time.valueOf(request.getParameter("bis"));
-		/**
-		if (request.getParameter("datum") != null && !request.getParameter("datum").equals("")) {
-			out.println(request.getParameter("datum"));
-			//datum = Date.valueOf(request.getParameter("datum"));
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate datum = LocalDate.parse(request.getParameter("datum"), formatter);
+		DateTimeFormatter formatter2 = DateTimeFormatter.ISO_LOCAL_TIME;
+		LocalTime von = LocalTime.parse(request.getParameter("von"), formatter2);
+		LocalTime bis = LocalTime.parse(request.getParameter("bis"), formatter2);
+
+		stm = conn.createStatement();
+
+		rs = stm.executeQuery(qRaum);
+		while (rs.next()) {
+			if (rs.getString("id").equals(raum)) {
+				existsRaum = true;
+
+				if (rs.getInt("max_personen") < max_studierende) {
+					checkGroesse = true;
+					raumgroesse = rs.getInt("max_personen");
+					break;
+				}
+				break;
+			}
 		}
-		
-		if (request.getParameter("von") != null && !request.getParameter("von").equals("")) {
-			von = Time.valueOf(request.getParameter("von"));
+		rs.close();
+
+		rs = stm.executeQuery(qDatum);
+		while (rs.next()) {
+			if ((rs.getObject("datum").toString().equals(datum.toString()))
+					&& (rs.getString("raum").equals(raum))) {
+				// Uhrzeitvergleich
+
+				if (rs.getObject("bis").toString().compareTo(von.toString()) > 0) {
+
+					if ((rs.getObject("von").toString().compareTo(von.toString()) <= 0)
+							&& (rs.getObject("von").toString().compareTo(bis.toString()) <= 0)) {
+						out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von")
+								+ " bis " + rs.getObject("bis")
+								+ " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
+						checkDatum = true;
+					}
+				}
+				if (rs.getObject("von").toString().compareTo(bis.toString()) > 0) {
+					if ((rs.getObject("bis").toString().compareTo(bis.toString()) <= 0)
+							&& (rs.getObject("bis").toString().compareTo(von.toString()) <= 0)) {
+						out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von")
+								+ " bis " + rs.getObject("bis")
+								+ " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
+						checkDatum = true;
+						;
+					}
+				}
+
+				if (((rs.getObject("von").toString().compareTo(von.toString()) > 0)
+						&& (rs.getObject("bis").toString().compareTo(bis.toString())) > 0)
+						&& (rs.getObject("von").toString().compareTo(bis.toString())) < 0) {
+					out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von") + " bis "
+							+ rs.getObject("bis") + " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
+					checkDatum = true;
+				}
+			}
 		}
-		
-		if (request.getParameter("bis") != null && !request.getParameter("bis").equals("")) {
-			bis = Time.valueOf(request.getParameter("bis"));
-		}
-		**/
+
+		rs.close();
+
 		try {
-			stm = conn.createStatement();
 			rs = stm.executeQuery(qRaum);
-			
-			while(rs.next()) {
-				if(rs.getString(1).equals(raum)){
+
+			while (rs.next()) {
+				if (rs.getString(1).equals(raum)) {
 					existsRaum = true;
-				} 
-			}
-			if ( existsRaum == true) {
-			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, lva_titel);
-			pstmt.setString(2, lva_nummer);
-			pstmt.setString(3, leiter);
-			pstmt.setInt(4, max_studierende);
-			pstmt.setString(5, raum);
-			/**
-			pstmt.setDate(6, datum);
-			pstmt.setTime(7, von);
-			pstmt.setTime(8, bis);**/
-			pstmt.setString(6, lva_nummer);
-
-			pstmt.executeUpdate();
-
-			out.println("LVA wurde erfolgreich aktualisiert!");
-			existsRaum = false;
-			} else {
-				out.println("Der eingegeben Raum (" + raum + ") existiert nicht!");
+				}
 			}
 			
+			if (existsRaum == false) {
+				out.println("Der eingegebene Raum existiert nicht! Die LVA wurde nicht angelegt!");
+			} else if (checkGroesse == true) {
+				out.println("Die maximale Raumkapazität beträgt " + raumgroesse
+						+ ". Bitte geben Sie eine passende Größe an!");
+			} else if (checkDatum == false)
+			 {
+				pstmt = conn.prepareStatement(query);
+				pstmt.setString(1, lva_titel);
+				pstmt.setString(2, lva_nummer);
+				pstmt.setString(3, leiter);
+				pstmt.setInt(4, max_studierende);
+				pstmt.setString(5, raum);
+				pstmt.setObject(6, datum);
+				pstmt.setObject(7, von);
+				pstmt.setObject(8, bis);
+				pstmt.setString(9, lva_nummer);
+
+				pstmt.executeUpdate();
+
+				out.println("LVA wurde erfolgreich aktualisiert!");
+				existsRaum = false;
+			} 
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
