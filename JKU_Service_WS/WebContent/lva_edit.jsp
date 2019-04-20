@@ -33,13 +33,20 @@
 
 			String query = "SELECT titel, lva_nummer, leiter, max_studierende, raum, datum, von, bis FROM lva_service WHERE lva_nummer=?";
 
+			String qRaum = "SELECT DISTINCT id FROM raeume";
+			
+			Statement stmt = null;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
+			ResultSet rs1 = null;
 
 			try {
 				pstmt = conn.prepareStatement(query);
 				pstmt.setString(1, lva_nummer);
 				rs = pstmt.executeQuery();
+				
+				stmt = conn.createStatement();
+				rs1 = stmt.executeQuery(qRaum);
 
 				while (rs.next()) {
 		%>
@@ -53,7 +60,13 @@
 					value="<%=rs.getString(3)%>"></td>
 				<td><input type="text" name="max_studierende"
 					value="<%=rs.getString(4)%>"></td>
-				<td><input type="text" name="raum" value="<%=rs.getString(5)%>"></td>
+				<td><input type="text" name="raum" list="raum" value="<%=rs.getString(5)%>">
+				<datalist id="raum">
+					<%while (rs1.next()) {%>
+					<option value="<%=rs1.getString(1)%>"></option>
+					<%} %>
+					</datalist>
+				</td>
 				<td><input type="text" name="datum"
 					value="<%=rs.getString(6)%>"></td>
 				<td><input type="text" name="von" value="<%=rs.getString(7)%>"></td>
@@ -63,7 +76,8 @@
 		</tr>
 
 
-		<%
+		<%		
+		
 			}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -75,6 +89,14 @@
 						;
 					}
 					rs = null;
+				}
+				if (rs1 != null) {
+					try {
+						rs1.close();
+					} catch (SQLException e) {
+						;
+					}
+					rs1 = null;
 				}
 				if (pstmt != null) {
 					try {

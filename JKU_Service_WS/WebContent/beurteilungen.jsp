@@ -13,8 +13,6 @@
 	<table border=1>
 		<tr>
 			<th>LVA-Nummer</th>
-			<th>Vorname</th>
-			<th>Nachname</th>
 			<th>Matrikelnummer</th>
 			<th>Note</th>
 		</tr>
@@ -25,7 +23,7 @@
 			Connection conn = DriverManager.getConnection(
 					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
 
-			String query = "SELECT vorname, nachname, matrikelnummer, lva_nummer FROM studenten_liste WHERE lva_nummer=? AND pruefung = 'angemeldet'";
+			String query = "SELECT matrikelnummer, lva_nummer FROM studenten_pruefungsanmeldungen WHERE lva_nummer=? AND pruefung = 'angemeldet'";
 
 			String lva_nummer = request.getParameter("lva_nummer");
 
@@ -41,13 +39,9 @@
 		<tr>
 			<form method="post" action="beurteilungen_insert.jsp">
 				<td><input type="text" name="lva_nummer"
-					value="<%=rs.getString(4)%>" readonly></td>
-				<td><input type="text" name="vorname"
-					value="<%=rs.getString(1)%>" readonly></td>
-				<td><input type="text" name="nachname"
 					value="<%=rs.getString(2)%>" readonly></td>
 				<td><input type="text" name="matrikelnummer"
-					value="<%=rs.getString(3)%>" readonly></td>
+					value="<%=rs.getString(1)%>" readonly></td>
 				<td><select name="note"">
 						<option value="" disabled selected hidden>Bitte
 							auswählen...</option>

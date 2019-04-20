@@ -40,7 +40,7 @@ if (request.getParameter("bis") != null && !request.getParameter("bis").equals("
 
 Class.forName("org.sqlite.JDBC");
 Connection conn = DriverManager.getConnection(
-		"jdbc:sqlite:C:\\Users\\simon\\Documents\\Vorlesungen\\ServiceEngineering\\service_engineering_ue2\\ue2.db");
+		"jdbc:sqlite:C:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
 Statement stat = conn.createStatement();
 String qRaum = "SELECT * FROM raeume";
 String query = "INSERT INTO raum_service( raum, datum, von, bis) VALUES (?,?,?,?)";

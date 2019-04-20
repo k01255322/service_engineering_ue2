@@ -31,14 +31,21 @@
 
 			String query = "SELECT titel, lva_nummer, leiter FROM lva_service WHERE lva_nummer=?";
 			
+			String qRaum = "SELECT DISTINCT id FROM raeume";
+			
+			Statement stmt = null;
+			
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
+			ResultSet rs1 = null;
 
 			try {
 				pstmt = conn.prepareStatement(query);
 				pstmt.setString(1, lva_nummer);
 				rs = pstmt.executeQuery();
-
+				
+				stmt = conn.createStatement();
+				rs1 = stmt.executeQuery(qRaum);
 				while (rs.next()) {
 		%>
 		
@@ -49,7 +56,12 @@
 				<td><input type="text" name="datum" placeholder="2019-12-31"></td>
 				<td><input type="text" name="von" placeholder="12:30"></td>
 				<td><input type="text" name="bis" placeholder="14:30"></td>
-				<td><input type="text" name="raum" placeholder="HS 1"></td>
+				<td><input type="text" name="raum" list ="raum" placeholder="HS 1">
+					<datalist id="raum">
+					<%while (rs1.next()) {%>
+					<option value="<%=rs1.getString(1)%>"></option>
+					<%} %>
+					</datalist></td>
 				<td><input type="text" name="plaetze" placeholder="100"></td>
 				<td><input type="submit" value="Bestätigen"></td>
 			</form>
@@ -63,7 +75,8 @@
 			}
 			} catch (SQLException e) {
 				e.printStackTrace();
-			} finally {
+			} 
+			finally {
 				if (rs != null) {
 					try {
 						rs.close();
@@ -71,6 +84,14 @@
 						;
 					}
 					rs = null;
+				}
+				if (rs1 != null) {
+					try {
+						rs1.close();
+					} catch (SQLException e) {
+						;
+					}
+					rs1 = null;
 				}
 				if (pstmt != null) {
 					try {

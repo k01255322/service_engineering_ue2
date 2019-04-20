@@ -69,7 +69,6 @@
 			if ((rs.getObject("datum").toString().equals(datum.toString()))
 					&& (rs.getString("raum").equals(raum))) {
 				// Uhrzeitvergleich
-
 				if (rs.getObject("bis").toString().compareTo(von.toString()) > 0) {
 
 					if ((rs.getObject("von").toString().compareTo(von.toString()) <= 0)
@@ -111,14 +110,13 @@
 					existsRaum = true;
 				}
 			}
-			
+
 			if (existsRaum == false) {
 				out.println("Der eingegebene Raum existiert nicht! Die LVA wurde nicht angelegt!");
 			} else if (checkGroesse == true) {
 				out.println("Die maximale Raumkapazität beträgt " + raumgroesse
 						+ ". Bitte geben Sie eine passende Größe an!");
-			} else if (checkDatum == false)
-			 {
+			} else if (checkDatum == false) {
 				pstmt = conn.prepareStatement(query);
 				pstmt.setString(1, lva_titel);
 				pstmt.setString(2, lva_nummer);
@@ -134,7 +132,7 @@
 
 				out.println("LVA wurde erfolgreich aktualisiert!");
 				existsRaum = false;
-			} 
+			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();

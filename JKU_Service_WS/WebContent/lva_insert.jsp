@@ -142,8 +142,8 @@
 						+ " wurde erfolgreich angelegt!");
 				
 				/**
-				response.sendRedirect("raum_service.jsp?raum="+raum 
-						+ "&datum=" + datum + "&von="+von + "&bis=" +bis);
+				response.sendRedirect("book_room.jsp?raum="+raum 
+						+ "&datum=" + datum.toString() + "&von="+von.toString() + "&bis=" +bis.toString());
 				**/
 
 			} catch (SQLException e) {

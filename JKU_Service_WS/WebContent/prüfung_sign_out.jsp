@@ -23,7 +23,8 @@
 
 		String queryStudent = "SELECT matrikelnummer, pruefung FROM studenten_liste WHERE matrikelnummer = ? AND lva_nummer =?";
 
-		String query = "UPDATE studenten_liste SET pruefung='abgemeldet' WHERE matrikelnummer=? AND lva_nummer=?";
+		//String query = "UPDATE studenten_liste SET pruefung='abgemeldet' WHERE matrikelnummer=? AND lva_nummer=?";
+		String query = "UPDATE studenten_pruefungsanmeldungen SET pruefung='abgemeldet' WHERE matrikelnummer=? AND lva_nummer=?";
 
 		String queryAbmeldungen = "UPDATE pruefungs_service SET anmeldungen = anmeldungen - 1 WHERE lva_nummer=?";
 		PreparedStatement pstm = null;

@@ -127,13 +127,14 @@
 						+ ") wurde erfolgreich angelegt!");
 			} else if (exists == false) {
 				out.println("Der eingegebene Raum (" + raum + ") existiert nicht!");
-			} else {
+			} else{
 				out.println("Für diese LVA (" + lva_nummer + ") wurde bereits eine Prüfung angelegt!");
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
+		} 
+		finally {
 			if (pstmt != null) {
 				try {
 					pstmt.close();

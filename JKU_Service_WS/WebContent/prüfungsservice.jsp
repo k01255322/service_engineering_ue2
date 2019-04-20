@@ -25,9 +25,10 @@
 		String matrikelnummer = request.getParameter("matrikelnummer");
 		String lva_bezeichnung = request.getParameter("titel");
 
-		String qStudent = "SELECT matrikelnummer, pruefung FROM studenten_liste";
+		String qStudent = "SELECT matrikelnummer FROM studenten_liste";
 		String qPrüfung = "SELECT lva_titel FROM pruefungs_service";
 		String qAnmeldung = "SELECT lva_titel, lva_nummer, datum, von, bis, ort, anzahl_plaetze, anmeldungen FROM pruefungs_service WHERE lva_titel=?";
+		
 		Statement stm = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
@@ -98,7 +99,7 @@
 				
 				%>
 			<td><a
-				href="prüfung_abmeldung.jsp?lva_nummer=<%=rs.getString(2)%>
+				href="prüfung_sign_out.jsp?lva_nummer=<%=rs.getString(2)%>
 				&matrikelnummer=<%=rs1.getString(1)%>">Abmelden</a></td>
 		</tr>
 
