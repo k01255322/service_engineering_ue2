@@ -2,26 +2,25 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>LVA Anmeldung</title>
+<title>Prüfungsabmeldung</title>
 </head>
 <body>
 
-<h1>LVA-Anmeldung</h1>
+<h1>Abmelden von Prüfungen</h1>
 
-<form action="lva_input_student.jsp" method="post">
+	<form action="prüfungsservice_exams_sign_out.jsp" method="post">
 		<table border=0>
-		<tr> 
-			<tr> 
+			<tr> <!-- Matrikelnummer entfernen, sobald eine Login-Funktion erstellt wurde -->
 				<td>Marikelnummer</td>
 				<td><input type="text" name="matrikelnummer"
 					placeholder="z.B. k01255322"></td>
 			</tr>
 		</table>
 
-		<input type="submit" value="Anmelden">
+		<input type="submit" value="Abrufen">
 	</form>
 	<br>
-
+	<a href="prüfungsservice.html">Zurück</a>
 	<a href="main_page.html">Hauptmenü</a>
 
 

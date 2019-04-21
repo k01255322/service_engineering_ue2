@@ -93,23 +93,15 @@
 			
 			<td><a
 				href="prüfungsservice_insert.jsp?lva_nummer=<%=rs.getString(2)%>
-				&matrikelnummer=<%=rs1.getString(1)%>
+				&matrikelnummer=<%=matrikelnummer%>
 				&lva_titel=<%=rs2.getString(1)%>">Anmelden</a></td>
 				<%} 
-				
-				%>
-			<td><a
-				href="prüfung_sign_out.jsp?lva_nummer=<%=rs.getString(2)%>
-				&matrikelnummer=<%=rs1.getString(1)%>">Abmelden</a></td>
-		</tr>
-
-		<%
 				
 				}
 				} else if (existsMatrikel == false) {
 					out.println("Die eingegebene Matrikelnummer existiert nicht!");
 				} else {
-					out.println("Die eingegebene LVA existiert nicht!");
+					out.println("Für die eingegebene LVA wurde noch keine Prüfungsanmeldung freigeschaltet!");
 				}
 				existsMatrikel = false;
 				existsPrüfung = false;

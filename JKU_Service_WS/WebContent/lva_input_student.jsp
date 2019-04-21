@@ -8,96 +8,108 @@
 <meta charset="ISO-8859-1">
 <title>Student einfügen</title>
 
+<h1>LVA-Übersicht</h1>
+
+	<table border=1>
+		<tr>
+			<th>LVA Titel</th>
+			<th>LVA Nummer</th>
+			<th>LVA Leiter</th>
+			<th>Raum</th>
+			<th>Datum</th>
+			<th>Von</th>
+			<th>Bis</th>
+		</tr>
 
 <%
-	// Variablen
-	boolean existsMatr = false;
-	boolean existsLva = false;
 
-	// Datenbankverbindung
-	Class.forName("org.sqlite.JDBC");
-	Connection conn = DriverManager.getConnection(
-			"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
 
-	String query = "SELECT matrikelnummer FROM studenten_liste";
+//Variablen
+			boolean exists = false;
 
-	String qLva = "SELECT lva_nummer FROM lva_service";
+			// Datenbankverbindung
+			Class.forName("org.sqlite.JDBC");
+			Connection conn = DriverManager.getConnection(
+					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
 
-	String qInsert = "INSERT INTO studenten_lva_anmeldungen(matrikelnummer, lva_nummer) VALUES (?,?)";
+			String qMatr = "SELECT matrikelnummer FROM studenten_liste";
+			
 
-	String matrikelnummer = request.getParameter("matrikelnummer");
-	String lva_nummer = request.getParameter("lva_nummer");
+			String query = "SELECT titel, lva_nummer, leiter, raum, datum, von, bis FROM lva_service";
+							 
+			String matrikelnummer = request.getParameter("matrikelnummer");
 
-	Statement stm = null;
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
+			Statement stmt = null;
 
-	try {
-		stm = conn.createStatement();
-		rs = stm.executeQuery(query);
-		while (rs.next()) {
-			if (rs.getString(1).equals(matrikelnummer)) {
-				existsMatr = true;
-				break;
-			}
-		}
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 
-		rs.close();
-		rs = stm.executeQuery(qLva);
-		while (rs.next()) {
-			if (rs.getString(1).equals(lva_nummer)) {
-				existsLva = true;
-				break;
-			}
-		}
 
-		rs.close();
-
-		if (existsMatr == true && existsLva == true) {
-			pstmt = conn.prepareStatement(qInsert);
-			pstmt.setString(1, matrikelnummer);
-			pstmt.setString(2, lva_nummer);
-			pstmt.executeUpdate();
-			out.println("Anmeldung wurde durchgeführt.");
-		}
-
-	} catch (SQLException e) {
-		e.printStackTrace();
-	} finally {
-		if (rs != null) {
 			try {
+				stmt = conn.createStatement();
+				rs = stmt.executeQuery(qMatr);
+				while (rs.next()) {
+					if (rs.getString(1).equals(matrikelnummer)) {
+						exists = true;
+						break;
+					}
+				}
 				rs.close();
-			} catch (SQLException e) {
-				;
+
+			if (exists == true) {	
+					stmt = conn.createStatement();
+					rs = stmt.executeQuery(query);
+
+					while (rs.next()) {
+		%>
+		<tr>
+			<td><%=rs.getString(1)%><br></td>
+			<td><%=rs.getString(2)%><br></td>
+			<td><%=rs.getString(3)%><br></td>
+			<td><%=rs.getString(4)%><br></td>
+			<td><%=rs.getString(5)%><br></td>
+			<td><%=rs.getString(6)%><br></td>
+			<td><%=rs.getString(7)%><br></td>
+			<td>
+			<a
+				href="lva_insert_student.jsp?lva_nummer=<%=rs.getString(2)%>
+				&matrikelnummer=<%=matrikelnummer%>">Anmelden</a></td>
+		</tr>
+		
+
+		<%
 			}
-			rs = null;
-		}
-		if (pstmt != null) {
-			try {
-				pstmt.close();
+				}
 			} catch (SQLException e) {
-				;
+				e.printStackTrace();
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						;
+					}
+					rs = null;
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+						;
+					}
+					pstmt = null;
+				}
+				if (conn != null) {
+					try {
+						conn.close();
+					} catch (SQLException e) {
+						;
+					}
+					conn = null;
+				}
 			}
-			pstmt = null;
-		}
-		if (stm != null) {
-			try {
-				stm.close();
-			} catch (SQLException e) {
-				;
-			}
-			stm = null;
-		}
-		if (conn != null) {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				;
-			}
-			conn = null;
-		}
-	}
-%>
+		%>
+		
 </table>
 <br>
 <br>

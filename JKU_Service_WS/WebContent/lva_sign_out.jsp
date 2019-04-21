@@ -6,13 +6,11 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Prüfungsabmeldung</title>
+<title>LVA Abmeldung</title>
 </head>
 <body>
 
 	<%
-		// Variablen
-		boolean existsAbmeldung = false;
 		//Datenbankverbindung
 		Class.forName("org.sqlite.JDBC");
 		Connection conn = DriverManager.getConnection(
@@ -20,46 +18,27 @@
 
 		String lva_nummer = request.getParameter("lva_nummer");
 		String matrikelnummer = request.getParameter("matrikelnummer");
-		
-		String query = "DELETE FROM studenten_pruefungsanmeldungen WHERE matrikelnummer = ? AND lva_nummer =?";
 
-		String queryAbmeldungen = "UPDATE pruefungs_service SET anmeldungen = anmeldungen - 1 WHERE lva_nummer=?";
+		String query = "DELETE FROM studenten_lva_anmeldungen WHERE matrikelnummer=? AND lva_nummer=?";
+
 		PreparedStatement pstm = null;
-		ResultSet rs = null;
-		
-		
 
 		try {
 			
-			
-			
-				
 				pstm = conn.prepareStatement(query);
 				pstm.setString(1, matrikelnummer);
 				pstm.setString(2, lva_nummer);
 				pstm.executeUpdate();
 
-				pstm.close();
-
-				pstm = conn.prepareStatement(queryAbmeldungen);
-				pstm.setString(1, lva_nummer);
-				pstm.executeUpdate();
-
 				out.println("Abmeldung wurde durchgeführt!");
 			
-
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					;
-				}
-			}
+			
 			if (pstm != null) {
 				try {
 					pstm.close();
@@ -81,6 +60,7 @@
 
 	<br>
 	<br>
+	<a href="lva_overview_student.html">Zurück</a>
 	<a href="main_page.html">Hauptmenü</a>
 
 

@@ -14,36 +14,35 @@
 		// Variablen
 		boolean existsAnmeldung = false;
 		boolean abgemeldet = false;
+		boolean regLva = false;
 
 		//Datenbankverbindung
 		Class.forName("org.sqlite.JDBC");
 		Connection conn = DriverManager.getConnection(
 				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
 
-		/**
-		To-Do Seite erstellen zum eintragen der Studenten in Kurse
-			Die Prüfungsanmeldung muss dann mit dem Kurs und der MAtrikelnummer abgestimmt werden
-		**/
 		String matrikelnummer = request.getParameter("matrikelnummer");
 		String lva_nummer = request.getParameter("lva_nummer");
 		String lva_bezeichnung = request.getParameter("lva_titel");
 
+		String qLva = "SELECT matrikelnummer FROM studenten_lva_anmeldungen";
+
 		String queryAngemeldet = "SELECT pruefung FROM studenten_pruefungsanmeldungen WHERE matrikelnummer = ? AND lva_nummer=?";
-				
+
 		String query = "INSERT INTO studenten_pruefungsanmeldungen(matrikelnummer, lva_bezeichnung, lva_nummer, pruefung) VALUES (?,?,?, 'angemeldet')";
-		
-		String qUpdate = "UPDATE studenten_pruefungsanmeldungen SET pruefung = 'angemeldet' WHERE matrikelnummer =? AND lva_nummer=?";
+
+		//String qUpdate = "UPDATE studenten_pruefungsanmeldungen SET pruefung = 'angemeldet' WHERE matrikelnummer =? AND lva_nummer=?";
 
 		String queryAnmeldungen = "UPDATE pruefungs_service SET anmeldungen = anmeldungen + 1 WHERE lva_nummer=?";
 
+		Statement stm = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
-
 
 		try {
 			pstm = conn.prepareStatement(queryAngemeldet);
 			pstm.setString(1, matrikelnummer);
-			pstm.setString(2,lva_nummer);
+			pstm.setString(2, lva_nummer);
 			rs = pstm.executeQuery();
 			while (rs.next()) {
 				if (rs.getString(1).equals("angemeldet")) {
@@ -55,7 +54,7 @@
 
 			pstm.close();
 			rs.close();
-			
+			/**
 			pstm = conn.prepareStatement(queryAngemeldet);
 			pstm.setString(1, matrikelnummer);
 			pstm.setString(2,lva_nummer);
@@ -65,19 +64,35 @@
 					abgemeldet = true;
 					break;
 				}
+			}**/
+
+			//pstm = conn.prepareStatement(qLva);
+			//pstm.setString(1, matrikelnummer);
+			stm = conn.createStatement();
+			rs = stm.executeQuery(qLva);
+
+			while (rs.next()) {
+
+				if (rs.getString(1).equals(matrikelnummer)) {
+					regLva = true;
+
+				} else {
+					out.println(
+							"Du bist nicht für diese LVA angemeldet! Eine Prüfungsanmeldung ist daher nicht möglich!");
+				}
+
 			}
 
 			pstm.close();
 
-			if (existsAnmeldung == false && abgemeldet == false) {
-				
+			if (existsAnmeldung == false && regLva == true) {
+
 				pstm = conn.prepareStatement(query);
 				pstm.setString(1, matrikelnummer);
 				pstm.setString(2, lva_bezeichnung);
 				pstm.setString(3, lva_nummer);
-				
-				pstm.executeUpdate();
 
+				pstm.executeUpdate();
 
 				pstm.close();
 
@@ -87,23 +102,23 @@
 
 				out.println(
 						"Die Anmeldung zu der Prüfung in " + lva_bezeichnung + " wurde erfolgreich durchgeführt!");
-			} if(existsAnmeldung == false && abgemeldet == true) {
+			} /** if(existsAnmeldung == false && abgemeldet == true && regLva == true) {
 				pstm = conn.prepareStatement(qUpdate);
 				pstm.setString(1, matrikelnummer);
 				pstm.setString(2, lva_nummer);
 				
 				pstm.executeUpdate();
-
-
+				
+				
 				pstm.close();
-
+				
 				pstm = conn.prepareStatement(queryAnmeldungen);
 				pstm.setString(1, lva_nummer);
 				pstm.executeUpdate();
-
+				
 				out.println(
 						"Die Anmeldung zu der Prüfung in " + lva_bezeichnung + " wurde erfolgreich durchgeführt!");
-			}
+				}**/
 
 			existsAnmeldung = false;
 

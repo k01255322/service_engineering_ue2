@@ -1,18 +1,20 @@
 <%@ page import="java.sql.*"%>
 <%@ page import="org.sqlite.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Prüfungsabmeldung</title>
+<title>Student in DB einfügen</title>
 </head>
 <body>
 
-	<%
-		// Variablen
-		boolean existsAbmeldung = false;
+<%
+// Variablen
+boolean existsMatr = false;
+boolean bereitsAng = false;
+
 		//Datenbankverbindung
 		Class.forName("org.sqlite.JDBC");
 		Connection conn = DriverManager.getConnection(
@@ -20,46 +22,53 @@
 
 		String lva_nummer = request.getParameter("lva_nummer");
 		String matrikelnummer = request.getParameter("matrikelnummer");
-		
-		String query = "DELETE FROM studenten_pruefungsanmeldungen WHERE matrikelnummer = ? AND lva_nummer =?";
 
-		String queryAbmeldungen = "UPDATE pruefungs_service SET anmeldungen = anmeldungen - 1 WHERE lva_nummer=?";
+		String query = "SELECT matrikelnummer FROM studenten_liste";
+		
+		String qAnm = "SELECT matrikelnummer, lva_nummer FROM studenten_lva_anmeldungen";
+		
+		String qInsert = "INSERT INTO studenten_lva_anmeldungen(matrikelnummer, lva_nummer) VALUES (?,?)";
+
+		Statement stm = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
-		
-		
 
 		try {
 			
+			stm = conn.createStatement();
+			rs = stm.executeQuery(query);
+			while (rs.next()) {
+				if (rs.getString(1).equals(matrikelnummer)) {
+					existsMatr = true;
+					break;
+				}
+			}
+			rs.close();
+			rs = stm.executeQuery(qAnm);
+			while(rs.next()) {
+				if (rs.getString(1).equals(matrikelnummer) && rs.getString(2).equals(lva_nummer)) {
+					bereitsAng = true;
+					out.println("Du bist bereits für diese LVA angemeldet.");
+					break;
+				}
+			}
 			
+			if(existsMatr == true && bereitsAng == false) {
 			
-				
-				pstm = conn.prepareStatement(query);
+				pstm = conn.prepareStatement(qInsert);
 				pstm.setString(1, matrikelnummer);
 				pstm.setString(2, lva_nummer);
 				pstm.executeUpdate();
 
-				pstm.close();
-
-				pstm = conn.prepareStatement(queryAbmeldungen);
-				pstm.setString(1, lva_nummer);
-				pstm.executeUpdate();
-
-				out.println("Abmeldung wurde durchgeführt!");
+				out.println("Anmeldung wurde durchgeführt!");
+			}
 			
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					;
-				}
-			}
+			
 			if (pstm != null) {
 				try {
 					pstm.close();
@@ -81,8 +90,8 @@
 
 	<br>
 	<br>
+	<a href="lva_input_student.html">Zurück</a>
 	<a href="main_page.html">Hauptmenü</a>
-
 
 </body>
 </html>
