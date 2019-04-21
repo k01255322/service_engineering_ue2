@@ -53,7 +53,7 @@
 			<form method="post" action="prüfung_insert.jsp">
 				<td><input type="text" name="titel" value="<%=rs.getString(1)%>" readonly></td>
 				<td><input type="text" name="lva_nummer" value="<%=rs.getString(2)%>" readonly></td>
-				<td><input type="text" name="datum" placeholder="2019-12-31"></td>
+				<td><input type="text" name="datum" placeholder="31.12.2019"></td>
 				<td><input type="text" name="von" placeholder="12:30"></td>
 				<td><input type="text" name="bis" placeholder="14:30"></td>
 				<td><input type="text" name="raum" list ="raum" placeholder="HS 1">

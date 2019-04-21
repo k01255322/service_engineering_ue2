@@ -63,7 +63,7 @@ try {
 		</tr>
 		<tr>
 		<td>Datum:</td>
-		<td><input type="text" name="datum" placeholder="z.B. 2019-12-31"></td>
+		<td><input type="text" name="datum" placeholder="z.B. 31.12.2019"></td>
 		</tr>
 		<tr>
 		<td>Uhrzeit von:</td>
