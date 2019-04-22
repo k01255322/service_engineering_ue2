@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    <%@page import="java.text.SimpleDateFormat"%>
+   <%@page import="java.time.format.DateTimeFormatter"%>
+   <%@page import="java.time.LocalDate"%>
+   <%@page import="java.time.LocalTime"%>
     <%@ page import="java.sql.*"%>
     <%@ page import="org.sqlite.*"%>
 <!DOCTYPE html>
@@ -12,37 +14,20 @@
 <body>
 <%
 boolean raumexists = false;
-String raum = null;
-Date datum = null;
-Time von = null;
-Time bis = null;
-SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm");
-
-if (request.getParameter("raum") != null && !request.getParameter("raum").equals("")) {
-	raum = request.getParameter("raum");
-}
-
-if (request.getParameter("datum") != null && !request.getParameter("datum").equals("")) {
-	java.util.Date parsedate = formatter.parse(request.getParameter("datum"));
-	datum = new java.sql.Date(parsedate.getTime());
-}
-
-if (request.getParameter("von") != null && !request.getParameter("von").equals("")) {
-	long ms = formatter2.parse(request.getParameter("von")).getTime();
-	von = new Time(ms);
-}
-
-if (request.getParameter("bis") != null && !request.getParameter("bis").equals("")) {
-	long ms = formatter2.parse(request.getParameter("bis")).getTime();
-	bis = new Time(ms);
-}
-
+DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+LocalDate ldatum = LocalDate.parse(request.getParameter("datum"), formatter);
+String datum = ldatum.format(formatter);
+DateTimeFormatter formatter2 = DateTimeFormatter.ISO_LOCAL_TIME;
+LocalTime von = LocalTime.parse(request.getParameter("von"), formatter2);
+LocalTime bis = LocalTime.parse(request.getParameter("bis"), formatter2);
+String raum = request.getParameter("raum");
 Class.forName("org.sqlite.JDBC");
 Connection conn = DriverManager.getConnection(
-		"jdbc:sqlite:C:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
+		"jdbc:sqlite:C:\\Users\\simon\\Documents\\Vorlesungen\\ServiceEngineering\\service_engineering_ue2\\ue2.db");
 Statement stat = conn.createStatement();
 String qRaum = "SELECT * FROM raeume";
+String service ="SELECT * FROM raum_service" +
+                " WHERE raum='"+raum+"'"+"and datum='"+datum+"' and von='"+von+"' and bis='"+bis+"'";
 String query = "INSERT INTO raum_service( raum, datum, von, bis) VALUES (?,?,?,?)";
 PreparedStatement pst = null;
 ResultSet rs = stat.executeQuery(qRaum);
@@ -54,10 +39,14 @@ if (raum != null) {
 		}
 	}
  }
-
+rs = stat.executeQuery(service);
 if (raumexists==false){
 	out.println("Dieser Raum existiert nicht. Daher kann kein Termin gebucht werden!");
-}else{
+}else if(rs.next())
+{
+	out.println("Raum bereits gebucht!");
+}
+else{
 	
 	try {
 		pst = conn.prepareStatement(query);
@@ -70,19 +59,19 @@ if (raumexists==false){
 		}
 
 		if (datum != null) {
-			pst.setDate(2, datum);
+			pst.setObject(2, datum);
 		} else {
 			pst.setNull(2, java.sql.Types.DATE);
 		}
 
 		if (von != null) {
-			pst.setTime(3, von);
+			pst.setObject(3, von);
 		} else {
 			pst.setNull(3, java.sql.Types.TIME);
 		}
 
 		if (bis != null) {
-			pst.setTime(4, bis);
+			pst.setObject(4, bis);
 		} else {
 			pst.setNull(4, java.sql.Types.TIME);
 		}
@@ -90,10 +79,12 @@ if (raumexists==false){
 		pst.executeUpdate();
 
 		out.println("Der Raum " + raum + " wurde erfolgreich zum angegebenen Termin reserviert!");
+		
+		
 
 	} catch (SQLException e) {
 		if(conn!=null)
-            conn.rollback();
+			out.println("Fehler!");
 	} catch (Exception e) {
 		e.printStackTrace();
 	} finally {

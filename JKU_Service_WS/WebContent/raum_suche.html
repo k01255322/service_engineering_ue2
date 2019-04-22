@@ -2,14 +2,19 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Raum Buchen</title>
+<title>Raum Suche</title>
 </head>
 <body>
-<form action="book_room.jsp" method="post">
+<form action="filter_room.jsp" method="post">
+         <input type = "checkbox" name = "frei" checked = "checked" value="true"/> freie Räume
+         <input type = "checkbox" name = "max" value="true"  /> max Teilnehmer
+         <br>
+         <br>
+    
 	<table border=0>
-	    <tr>
-		<td>Raum:</td>
-		<td><input type="text" name="raum" placeholder ="z.B. HS 1"></td>
+		<tr>
+		<td>Max Teilnehmeranzahl:</td>
+		<td><input type="number" name="maxanzahl" placeholder="40"></td>
 		</tr>
 		<tr>
 		<td>Datum:</td>
@@ -23,10 +28,9 @@
 		<td>Uhrzeit bis:</td>
 		<td><input type="text" name="bis" placeholder="z.B. 14:45"></td>
 		</tr>
-		
 	</table>
-	
-	<input type="submit" value="Buchen">
+	<br>
+	<input type="submit" value="Suchen">
 	</form>
 	<br>
 	<a href= "index.html">Hauptmenü</a>
