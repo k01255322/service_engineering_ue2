@@ -80,7 +80,7 @@
 
 	<br>
 	<br>
-	<a href="lva_overview.jsp">LVA-Übersicht</a>
+	<a href="lva_service.html">Zurück</a>
 	<a href="index.html">Hauptmenü</a>
 
 </body>

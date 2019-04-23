@@ -23,17 +23,16 @@
 				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
 
 		String matrikelnummer = request.getParameter("matrikelnummer");
-		String lva_bezeichnung = request.getParameter("titel");
 
 		String qStudent = "SELECT matrikelnummer FROM studenten_liste";
-		String qPrüfung = "SELECT lva_titel FROM pruefungs_service";
-		String qAnmeldung = "SELECT lva_titel, lva_nummer, datum, von, bis, ort, anzahl_plaetze, anmeldungen FROM pruefungs_service WHERE lva_titel=?";
-		
+
+		String test = "SELECT p.lva_titel, p.lva_nummer, p.datum, p.von, p.bis, p.ort, p.anzahl_plaetze, p.anmeldungen FROM pruefungs_service p"
+				+ " LEFT JOIN studenten_lva_anmeldungen ON p.lva_nummer=studenten_lva_anmeldungen.lva_nummer WHERE studenten_lva_anmeldungen.matrikelnummer=?";
+
 		Statement stm = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
 		ResultSet rs1 = null;
-		ResultSet rs2 = null;
 
 		try {
 			stm = conn.createStatement();
@@ -44,19 +43,20 @@
 					break;
 				}
 			}
+			/**
+						stm = conn.createStatement();
+						rs2 = stm.executeQuery(qPrüfung);
+						while (rs2.next()) {
+							if (rs2.getString("lva_titel").equals(lva_bezeichnung)) {
+								existsPrüfung = true;
+								break;
+							}
+						}**/
 
-			stm = conn.createStatement();
-			rs2 = stm.executeQuery(qPrüfung);
-			while (rs2.next()) {
-				if (rs2.getString("lva_titel").equals(lva_bezeichnung)) {
-					existsPrüfung = true;
-					break;
-				}
-			}
+			if (existsMatrikel == true) {
 
-			if (existsMatrikel == true && existsPrüfung == true) {
-				pstm = conn.prepareStatement(qAnmeldung);
-				pstm.setString(1, lva_bezeichnung);
+				pstm = conn.prepareStatement(test);
+				pstm.setString(1, matrikelnummer);
 				rs = pstm.executeQuery();
 	%>
 	<table border=1>
@@ -73,7 +73,6 @@
 
 		<%
 			while (rs.next()) {
-				
 		%>
 		<tr>
 			<td><%=rs.getString(1)%><br></td>
@@ -84,76 +83,70 @@
 			<td><%=rs.getString(6)%><br></td>
 			<td><%=rs.getString(7)%><br></td>
 			<td><%=rs.getString(8)%><br></td>
-			
-			<% if(rs.getString(6).equals(rs.getString(7))) {
-				%>
-				<td>Anmeldung geschlossen</td>
-				<%} else { %>
-			
-			
+
+
+			<%
+				if (rs.getString(6).equals(rs.getString(7))) {
+			%>
+			<td>Anmeldung geschlossen</td>
+			<%
+				} else {
+			%>
+
+
 			<td><a
 				href="prüfungsservice_insert.jsp?lva_nummer=<%=rs.getString(2)%>
 				&matrikelnummer=<%=matrikelnummer%>
-				&lva_titel=<%=rs2.getString(1)%>">Anmelden</a></td>
-				<%} 
-				
-				}
-				} else if (existsMatrikel == false) {
-					out.println("Die eingegebene Matrikelnummer existiert nicht!");
-				} else {
-					out.println("Für die eingegebene LVA wurde noch keine Prüfungsanmeldung freigeschaltet!");
-				}
-				existsMatrikel = false;
-				existsPrüfung = false;
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				if (rs != null) {
-					try {
-						rs.close();
-					} catch (SQLException e) {
-						;
-					}
-					rs = null;
-				}
-				if (rs1 != null) {
-					try {
-						rs1.close();
-					} catch (SQLException e) {
-						;
-					}
-					rs1 = null;
-				}
-				if (rs2 != null) {
-					try {
-						rs2.close();
-					} catch (SQLException e) {
-						;
-					}
-					rs2 = null;
+				&lva_titel=<%=rs.getString(1)%>">Anmelden</a></td>
+			<%
 				}
 
-				if (pstm != null) {
-					try {
-						pstm.close();
-					} catch (SQLException e) {
-						;
+						}
+
+					} else {
+						out.println("Die eingegebene Matrikelnummer existiert nicht!");
 					}
-					pstm = null;
-				}
-				if (conn != null) {
-					try {
-						conn.close();
-					} catch (SQLException e) {
-						;
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					if (rs != null) {
+						try {
+							rs.close();
+						} catch (SQLException e) {
+							;
+						}
+						rs = null;
 					}
-					conn = null;
+					if (rs1 != null) {
+						try {
+							rs1.close();
+						} catch (SQLException e) {
+							;
+						}
+						rs1 = null;
+					}
+
+					if (pstm != null) {
+						try {
+							pstm.close();
+						} catch (SQLException e) {
+							;
+						}
+						pstm = null;
+					}
+					if (conn != null) {
+						try {
+							conn.close();
+						} catch (SQLException e) {
+							;
+						}
+						conn = null;
+					}
 				}
-			}
-		%>
+			%>
+		
 	</table>
 	<br>
 	<br>

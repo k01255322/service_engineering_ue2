@@ -90,7 +90,7 @@ boolean bereitsAng = false;
 
 	<br>
 	<br>
-	<a href="lva_input_student.html">Zurück</a>
+	<a href="lva_service.html">Zurück</a>
 	<a href="index.html">Hauptmenü</a>
 
 </body>

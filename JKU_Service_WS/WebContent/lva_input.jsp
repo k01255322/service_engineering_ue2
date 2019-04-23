@@ -12,10 +12,19 @@
 
 
 <%
+// Variablen
+boolean exists = false;
+
 //Datenbankverbindung
 Class.forName("org.sqlite.JDBC");
 Connection conn = DriverManager.getConnection(
 		"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
+
+String ak_nummer = request.getParameter("ak_nummer");
+
+String qAk = "SELECT ak_nummer, nachname FROM lehrende_liste";
+
+String lva_leiter = null;
 
 String qRaum = "SELECT DISTINCT id FROM raeume";
 
@@ -24,6 +33,20 @@ Statement stmt = null;
 ResultSet rs = null;
 
 try {
+	stmt = conn.createStatement();
+	rs = stmt.executeQuery(qAk);
+
+	while (rs.next()) {
+		if (rs.getString(1).equals(ak_nummer)) {
+			exists = true;
+			lva_leiter = rs.getString(2);
+			break;
+		}
+	}
+	rs.close();
+	
+	if (exists == true) {
+	
 	stmt = conn.createStatement();
 	rs = stmt.executeQuery(qRaum);
 
@@ -46,7 +69,7 @@ try {
 		</tr>
 		<tr>
 		<td>LVA-Leiter:</td>
-		<td><input type="text" name="leiter" placeholder="Vorname Nachname"></td>
+		<td><input type="text" name="leiter" placeholder=<%=lva_leiter %> readonly></td>
 		</tr>
 		<tr>
 		<td>Max. Anzahl Studierender:</td>
@@ -80,7 +103,11 @@ try {
 	</form>
 	<%
 			
-			} catch (SQLException e) {
+			}else {
+				out.println("Bitte eine gültige AK-Nummer eingeben!");
+			}
+} 
+	catch (SQLException e) {
 				e.printStackTrace();
 			} 
 			finally {
@@ -104,6 +131,8 @@ try {
 		%>
 	
 	<br>
+	<br>
+	<a href="lva_service.html">Zurück</a>
 	<a href= "index.html">Hauptmenü</a>
 
 

@@ -1,7 +1,7 @@
 <%@ page import="java.sql.*"%>
 <%@ page import="org.sqlite.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,8 +10,47 @@
 </head>
 <body>
 
-<h1>Prüfungsübersicht</h1>
+	<h1>Prüfungsübersicht</h1>
 
+	<%
+		// Variablen
+		boolean exists = false;
+		;
+
+		// Datenbankverbindung
+		Class.forName("org.sqlite.JDBC");
+		Connection conn = DriverManager.getConnection(
+				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
+
+		String qMatr = "SELECT matrikelnummer FROM studenten_liste";
+
+		String query = "SELECT p.lva_titel, p.lva_nummer, p.datum, p.von, p.bis, p.ort FROM pruefungs_service p INNER JOIN studenten_pruefungsanmeldungen USING(lva_nummer) "
+				+ "WHERE studenten_pruefungsanmeldungen.matrikelnummer=?";
+
+		String matrikelnummer = request.getParameter("matrikelnummer");
+
+		Statement stmt = null;
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(qMatr);
+			while (rs.next()) {
+				if (rs.getString(1).equals(matrikelnummer)) {
+					exists = true;
+					break;
+				}
+			}
+			rs.close();
+
+			if (exists == true) {
+				pstmt = conn.prepareStatement(query);
+				pstmt.setString(1, matrikelnummer);
+
+				rs = pstmt.executeQuery();
+	%>
 	<table border=1>
 		<tr>
 			<th>LVA Titel</th>
@@ -22,49 +61,7 @@
 			<th>Raum</th>
 		</tr>
 		<%
-			// Variablen
-			boolean exists = false;
-
-			// Datenbankverbindung
-			Class.forName("org.sqlite.JDBC");
-			Connection conn = DriverManager.getConnection(
-					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
-
-			String qMatr = "SELECT matrikelnummer FROM studenten_liste";
-
-			String query = "SELECT p.lva_titel, p.lva_nummer, p.datum, p.von, p.bis, p.ort FROM pruefungs_service p INNER JOIN studenten_pruefungsanmeldungen USING(lva_nummer) "
-							+ "WHERE studenten_pruefungsanmeldungen.matrikelnummer=?";
-							 
-			
-
-			String matrikelnummer = request.getParameter("matrikelnummer");
-
-			Statement stmt = null;
-
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-
-			try {
-				stmt = conn.createStatement();
-				rs = stmt.executeQuery(qMatr);
-				while (rs.next()) {
-					if (rs.getString(1).equals(matrikelnummer)) {
-						exists = true;
-						break;
-					} else {
-						out.println("Die eingegebene Matrikelnummer existiert nicht!");
-					}
-					
-				}
-				rs.close();
-
-			if (exists == true) {	
-					pstmt = conn.prepareStatement(query);
-					pstmt.setString(1, matrikelnummer);
-					
-					rs = pstmt.executeQuery();
-
-					while (rs.next()) {
+			while (rs.next()) {
 		%>
 		<tr>
 			<td><%=rs.getString(1)%><br></td>
@@ -79,7 +76,10 @@
 		</tr>
 		<%
 			}
+				} else {
+					out.println("Die eingegebene Matrikelnummer existiert nicht!");
 				}
+				exists = true;
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
@@ -112,6 +112,7 @@
 	</table>
 	<br>
 	<br>
+	<a href="prüfungsservice.html">Zurück</a>
 	<a href="index.html">Hauptmenü</a>
 
 </body>

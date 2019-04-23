@@ -2,19 +2,46 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>LVA Service</title>
+<title>Anmeldung</title>
 </head>
 <body>
 
-<h1>LVA Service der JKU</h1>
+<h1>Anmeldung Student</h1>
 
-	<a href ="lva_input.jsp">LVA einfügen (Lehrende)</a>
-	<a href="lva_input_student.html">LVA-Anmeldung (Studenten)</a>
-	<a href ="lva_overview.jsp">LVA Übersicht (Lehrende)</a>
-	<a href ="lva_overview_student.html">LVA Übersicht (Studenten)</a>
+<form action="lva_input_student.jsp" method="post">
+		<table border=0>
+		<tr> 
+			<tr> 
+				<td>Marikelnummer:</td>
+				<td><input type="text" name="matrikelnummer"
+					placeholder="z.B. k01255322"></td>
+			</tr>
+		</table>
+<br>
+		<input type="submit" value="LVA-Anmeldung">
+		<input type="submit" formaction="lva_overview_student.jsp" value="LVA-Übersicht">
+	</form>
+	<br>
+	<br>
 	
+	<h1>Anmeldung Lehrender</h1>
+
+<form action="lva_input.jsp" method="post">
+		<table border=0>
+		<tr> 
+			<tr> 
+				<td>AK-Nummer:</td>
+				<td><input type="text" name="ak_nummer"
+					placeholder="z.B. AK116904"></td>
+			</tr>
+		</table>
+<br>
+		<input type="submit" value="LVA anlegen">
+		<input type="submit" formaction="lva_overview.jsp" value="LVA-Übersicht">
+	</form>
 	<br>
-	<br>
-	<a href ="index.html">Hauptseite</a>
+
+	<a href="index.html">Hauptmenü</a>
+
 </body>
 </html>

@@ -6,20 +6,11 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Student einfügen</title>
+<title>LVA-Anmeldung</title>
 
-<h1>LVA-Übersicht</h1>
+<h1>LVA-Anmeldung</h1>
 
-	<table border=1>
-		<tr>
-			<th>LVA Titel</th>
-			<th>LVA Nummer</th>
-			<th>LVA Leiter</th>
-			<th>Raum</th>
-			<th>Datum</th>
-			<th>Von</th>
-			<th>Bis</th>
-		</tr>
+	
 
 <%
 
@@ -59,7 +50,18 @@
 			if (exists == true) {	
 					stmt = conn.createStatement();
 					rs = stmt.executeQuery(query);
-
+					%>
+					<table border=1>
+					<tr>
+						<th>LVA Titel</th>
+						<th>LVA Nummer</th>
+						<th>LVA Leiter</th>
+						<th>Raum</th>
+						<th>Datum</th>
+						<th>Von</th>
+						<th>Bis</th>
+					</tr>
+<%
 					while (rs.next()) {
 		%>
 		<tr>
@@ -79,6 +81,8 @@
 
 		<%
 			}
+				} else {
+					out.println("Bitte eine gültige Matrikelnummer eingeben!");
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -113,6 +117,7 @@
 </table>
 <br>
 <br>
+<a href="lva_service.html">Zurück</a>
 <a href="index.html">Hauptmenü</a>
 
 
