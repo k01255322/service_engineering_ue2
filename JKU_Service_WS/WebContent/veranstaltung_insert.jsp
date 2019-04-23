@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-   <%@page import="java.time.format.DateTimeFormatter"%>
+    <%@page import="java.time.format.DateTimeFormatter"%>
    <%@page import="java.time.LocalDate"%>
    <%@page import="java.time.LocalTime"%>
     <%@ page import="java.sql.*"%>
@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Raum buchen</title>
+<title>Insert title here</title>
 </head>
 <body>
 <%
@@ -20,31 +20,33 @@ String datum = ldatum.format(formatter);
 DateTimeFormatter formatter2 = DateTimeFormatter.ISO_LOCAL_TIME;
 LocalTime von = LocalTime.parse(request.getParameter("von"), formatter2);
 LocalTime bis = LocalTime.parse(request.getParameter("bis"), formatter2);
-String raum = request.getParameter("raum");
+String bez = request.getParameter("bez");
+String ort = request.getParameter("ort");
+int maxanzahl = Integer.parseInt(request.getParameter("maxteilnehmer"));
 Class.forName("org.sqlite.JDBC");
 Connection conn = DriverManager.getConnection(
 		"jdbc:sqlite:C:\\Users\\simon\\Documents\\Vorlesungen\\ServiceEngineering\\service_engineering_ue2\\ue2.db");
 Statement stat = conn.createStatement();
-String qRaum = "SELECT * FROM raeume";
-String service ="SELECT * FROM raum_service" +
-                " WHERE raum='"+raum+"'"+"and datum='"+datum+"' and von='"+von+"' and bis='"+bis+"'";
-String query = "INSERT INTO raum_service( raum, datum, von, bis) VALUES (?,?,?,?)";
+String service ="SELECT * FROM veranstaltung" +
+                " WHERE bez='"+bez+"'"+"and datum='"+datum+"' and von='"+von+"' and bis='"+bis+"'and ort='"+ort+"'";
+String query = "INSERT INTO veranstaltung( bez, datum, von, bis,max_teilnehmer,ort) VALUES (?,?,?,?,?,?)";
 PreparedStatement pst = null;
+String qRaum = "SELECT * FROM raeume";
 ResultSet rs = stat.executeQuery(qRaum);
-if (raum != null) {
+if (ort != null) {
 	while (rs.next()) {
-		if (rs.getString("id").equals(raum)) {
+		if (rs.getString("id").equals(ort)) {
 			raumexists = true;
 			break;
 		}
 	}
  }
-rs = stat.executeQuery(service);
-if (raumexists==false){
-	out.println("Dieser Raum existiert nicht. Daher kann kein Termin gebucht werden!");
-}else if(rs.next())
+ rs = stat.executeQuery(service);
+if(rs.next())
 {
-	out.println("Raum bereits gebucht!");
+	out.println("Veranstaltung existiert bereits!");
+}else if(raumexists==false){
+	out.print("Der Ort an dem die Veranstaltung stattfindet existiert nicht!");
 }
 else{
 	
@@ -52,8 +54,8 @@ else{
 		pst = conn.prepareStatement(query);
 
 
-		if (raum != null) {
-			pst.setString(1, raum);
+		if (bez!= null) {
+			pst.setString(1, bez);
 		} else {
 			pst.setNull(1, java.sql.Types.VARCHAR);
 		}
@@ -75,11 +77,20 @@ else{
 		} else {
 			pst.setNull(4, java.sql.Types.TIME);
 		}
+		if (maxanzahl>0) {
+			pst.setInt(5, maxanzahl);
+		} else {
+			pst.setInt(5, 0);
+		}
+		if (ort != null) {
+			pst.setString(6, ort);
+		} else {
+			pst.setNull(6, java.sql.Types.VARCHAR);
+		}
 
 		pst.executeUpdate();
 
-		out.println("Der Raum " + raum + " wurde erfolgreich zum angegebenen Termin reserviert!");
-		out.println("<a href=raum_buchen.html>Weiteren Termin buchen</a>");
+		out.println("Die Veranstaltung wurde erfolgreich angelegt");
 		out.println("<a href=index.html>Zurück zur Startseite</a>");
 		
 

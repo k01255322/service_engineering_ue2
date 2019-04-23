@@ -6,6 +6,7 @@
     <%@ page import="java.sql.*"%>
     <%@ page import="org.sqlite.*"%>
     <%@ page import="java.util.*"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,9 +72,15 @@
             		   }
             		   
             		   if(found==false){
+ 
             			   
-            			   out.print("<tr><td>" + rs2.getString(1) + "</td>\n"); 
-            			   out.println("<td> " + rs2.getString(2) + "</td></tr>\n");
+            			   
+            			   out.print("<tr><td>" + rs2.getString(1) + "</td>\n");
+            			   out.println("<td> " + rs2.getString(2) + "</td>\n");
+            			   out.println("<td> <a href=book_room.jsp?raum="+rs2.getString(1)+"&datum="+datum+"&von="+von+"&bis="+bis
+            					   +"> Buchen</a></td></tr>\n");
+            			   
+            			   
             		   }
             			
             		}
@@ -132,6 +139,6 @@
                
             %>
          </table>
-         
+  
 </body>
 </html>
