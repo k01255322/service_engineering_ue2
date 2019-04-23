@@ -68,8 +68,8 @@ try {
 		<td><input type="text" name="lva_nummer" placeholder="z.B. 255.255"></td>
 		</tr>
 		<tr>
-		<td>LVA-Leiter:</td>
-		<td><input type="text" name="leiter" placeholder=<%=lva_leiter %> readonly></td>
+		<td>AK-Nummer:</td>
+		<td><input type="text" name="ak_nummer" placeholder=<%=ak_nummer %>></td>
 		</tr>
 		<tr>
 		<td>Max. Anzahl Studierender:</td>
@@ -95,6 +95,9 @@ try {
 		<tr>
 		<td>Uhrzeit bis:</td>
 		<td><input type="text" name="bis" placeholder="z.B. 14:45"></td>
+		</tr>
+		<td>Wöchentliche LVA:</td>
+		<td><input type="checkbox" name="woechentlich"></td>
 		</tr>
 		
 	</table>

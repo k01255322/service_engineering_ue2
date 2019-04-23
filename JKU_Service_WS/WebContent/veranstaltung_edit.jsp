@@ -33,7 +33,7 @@ String ort = request.getParameter("ort");
 int maxanzahl = Integer.parseInt(request.getParameter("maxteilnehmer"));
 Class.forName("org.sqlite.JDBC");
 Connection conn = DriverManager.getConnection(
-		"jdbc:sqlite:C:\\Users\\simon\\Documents\\Vorlesungen\\ServiceEngineering\\service_engineering_ue2\\ue2.db");
+		"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
 Statement stat = conn.createStatement();
 String service ="SELECT * FROM veranstaltung" +
                 " WHERE ID='"+id+"'";

@@ -30,7 +30,7 @@
 		</tr>
 		<tr>
 		<td>Ort:</td>
-		<td><input type="text" name="ort" placeholder="HS_1"></td>
+		<td><input type="text" name="ort" placeholder="HS 1"></td>
 		</tr>
 		
 	</table>

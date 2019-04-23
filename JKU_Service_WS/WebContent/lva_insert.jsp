@@ -23,15 +23,19 @@
 		int raumgroesse = 0;
 
 		// Abfrage der eingegebenen Daten
+		try {
 		String lva_bezeichnung = request.getParameter("titel");
 		String lva_nummer = request.getParameter("lva_nummer");
-		String leiter = request.getParameter("leiter");
+		String leiter = null;
 		int max_studierende = Integer.parseInt(request.getParameter("max_studierende"));
 		String raum = request.getParameter("raum");
-
+		String ak_nummer = request.getParameter("ak_nummer");
+		String woechentlich = request.getParameter("woechentlich"); // value = on wenn angekreuzt
+		
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-		try {
-			LocalDate datum = LocalDate.parse(request.getParameter("datum"), formatter);
+			LocalDate tempDatum = LocalDate.parse(request.getParameter("datum"), formatter);
+			String datum = tempDatum.format(formatter);
+			
 			DateTimeFormatter formatter2 = DateTimeFormatter.ISO_LOCAL_TIME;
 			LocalTime von = LocalTime.parse(request.getParameter("von"), formatter2);
 			LocalTime bis = LocalTime.parse(request.getParameter("bis"), formatter2);
@@ -43,12 +47,14 @@
 			Statement stat = conn.createStatement();
 
 			String qLva = "SELECT lva_nummer FROM lva_service";
+			
+			String qLeiter = "SELECT nachname FROM lehrende_liste WHERE ak_nummer=?";
 
 			String qRaum = "SELECT * FROM raeume";
 
 			String qDatum = "SELECT * FROM raum_service";
 
-			String query = "INSERT INTO lva_service(titel, lva_nummer, leiter, max_studierende, raum, datum, von, bis) VALUES (?,?,?,?,?,?,?,?)";
+			String query = "INSERT INTO lva_service(titel, lva_nummer, leiter, max_studierende, raum, datum, von, bis, ak_nummer) VALUES (?,?,?,?,?,?,?,?,?)";
 			PreparedStatement pst = null;
 
 			// Prüfung, ob LVA bereits vorhanden	
@@ -74,12 +80,21 @@
 				}
 			}
 			rs.close();
+			
+			pst = conn.prepareStatement(qLeiter);
+			pst.setString(1, ak_nummer);
+			rs = pst.executeQuery();
+			leiter = rs.getString(1);
+			
+			rs.close();
+			pst.close();
 
+		
+			
 			rs = stat.executeQuery(qDatum);
 			while (rs.next()) {
 				if ((rs.getObject("datum").toString().equals(datum.toString()))
 						&& (rs.getString("raum").equals(raum))) {
-					// Uhrzeitvergleich
 
 					if (rs.getObject("bis").toString().compareTo(von.toString()) > 0) {
 
@@ -124,7 +139,6 @@
 				out.println("Die maximale Raumkapazität beträgt " + raumgroesse
 						+ ". Bitte geben Sie eine passende Größe an!");
 			} else if (checkDatum == false) {
-
 				try {
 					pst = conn.prepareStatement(query);
 
@@ -136,16 +150,19 @@
 					pst.setObject(6, datum);
 					pst.setObject(7, von);
 					pst.setObject(8, bis);
-
+					pst.setString(9, ak_nummer);
+					
 					pst.executeUpdate();
-
-					out.println("LVA mit der Nummer " + lva_nummer + " und der Bezeichnung " + lva_bezeichnung
-							+ " wurde erfolgreich angelegt!");
-
-					/**
+					
+					// LVA in DB-Tabelle raum_service eintragen
 					response.sendRedirect("book_room.jsp?raum="+raum 
 							+ "&datum=" + datum.toString() + "&von="+von.toString() + "&bis=" +bis.toString());
-					**/
+					
+					
+					out.println("LVA mit der Nummer " + lva_nummer + " und der Bezeichnung " + lva_bezeichnung
+							+ " wurde erfolgreich angelegt!");
+					
+					
 
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -184,7 +201,7 @@
 	%>
 	<br>
 	<br>
-	<a href="lva_insert.html">Zurück</a>
+	<a href="lva_service.html">Zurück</a>
 	<a href="index.html">Hauptmenü</a>
 
 </body>

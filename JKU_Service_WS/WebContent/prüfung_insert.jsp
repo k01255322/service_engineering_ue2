@@ -41,7 +41,9 @@
 		try {
 			LocalTime von = LocalTime.parse(request.getParameter("von"), formatter2);
 			LocalTime bis = LocalTime.parse(request.getParameter("bis"), formatter2);
-			LocalDate datum = LocalDate.parse(request.getParameter("datum"), formatter);
+			LocalDate tempDatum = LocalDate.parse(request.getParameter("datum"), formatter);
+			String datum = tempDatum.format(formatter);
+			
 			String raum = request.getParameter("raum");
 			int plaetze = Integer.parseInt(request.getParameter("plaetze"));
 
@@ -72,7 +74,6 @@
 				while (rs.next()) {
 					if ((rs.getObject("datum").toString().equals(datum.toString()))
 							&& (rs.getString("raum").equals(raum))) {
-						// Uhrzeitvergleich
 
 						if (rs.getObject("bis").toString().compareTo(von.toString()) > 0) {
 
@@ -108,10 +109,6 @@
 
 				rs.close();
 
-				/**
-				To-Do --> Eintragen in die Tabelle raum_service
-				**/
-
 				if (exists == true && existsPrüfung == false && checkDatum == false) {
 					pstmt = conn.prepareStatement(query);
 					pstmt.setString(1, lva_bezeichnung);
@@ -126,6 +123,12 @@
 
 					out.println("Prüfung für die LVA " + lva_bezeichnung + " (" + lva_nummer
 							+ ") wurde erfolgreich angelegt!");
+					
+					// LVA in DB-Tabelle raum_service eintragen
+					response.sendRedirect("book_room.jsp?raum="+raum 
+							+ "&datum=" + datum.toString() + "&von="+von.toString() + "&bis=" +bis.toString());
+					
+					
 				} else if (exists == false) {
 					out.println("Der eingegebene Raum (" + raum + ") existiert nicht!");
 				} else {

@@ -44,8 +44,8 @@
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 		try {
-			LocalDate datum = LocalDate.parse(request.getParameter("datum"), formatter);
-			DateTimeFormatter formatter2 = DateTimeFormatter.ISO_LOCAL_TIME;
+			LocalDate tempDatum = LocalDate.parse(request.getParameter("datum"), formatter);
+			String datum = tempDatum.format(formatter);			DateTimeFormatter formatter2 = DateTimeFormatter.ISO_LOCAL_TIME;
 			LocalTime von = LocalTime.parse(request.getParameter("von"), formatter2);
 			LocalTime bis = LocalTime.parse(request.getParameter("bis"), formatter2);
 
