@@ -80,7 +80,7 @@ Connection conn = DriverManager.getConnection(
 	<br>
 	<br>
 	<a href="prüfungsservice.html">Zurück</a>
-	<a href="main_page.html">Hauptmenü</a>
+	<a href="index.html">Hauptmenü</a>
 
 </body>
 </html>
