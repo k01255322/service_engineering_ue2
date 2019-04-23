@@ -7,13 +7,25 @@
 <body>
 
 	<h1>Prüfungsservice</h1>
+	
+	<form action="prüfungsservice.jsp" method="post">
+		<table border=0>
+		<tr> 
+			<tr> 
+				<td>Marikelnummer:</td>
+				<td><input type="text" name="matrikelnummer"
+					placeholder="z.B. k01255322"></td>
+			</tr>
+		</table>
+<br>
+		<input type="submit" value="LVA-Anmeldung">
+		<input type="submit" formaction="prüfungsservice_exams_sign_out.jsp" value="Prüfungsabmeldung">
+		<input type="submit" formaction="prüfungsservice_grades.jsp" value="Notenauskunft">
+	</form>
 
-	<a href="prüfungsservice_exams.html">Anmelden</a>
-	<a href="prüfungsservice_exams_sign_out.html">Abmelden</a>
-	<a href="prüfungsservice_grades.html">Notenauskunft</a>
 	<br>
 	<br>
-	<a href="main_page.html">Hauptmenü</a>
+	<a href="index.html">Hauptmenü</a>
 
 	
 

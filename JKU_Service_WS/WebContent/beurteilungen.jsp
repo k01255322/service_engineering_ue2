@@ -10,31 +10,33 @@
 </head>
 <body>
 
+<h1>Beurteilungen eingtragen</h1>
+
+	<%
+		// Datenbankverbindung
+		Class.forName("org.sqlite.JDBC");
+		Connection conn = DriverManager.getConnection(
+				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
+
+		String query = "SELECT matrikelnummer, lva_nummer FROM studenten_pruefungsanmeldungen WHERE lva_nummer=? AND pruefung = 'angemeldet'";
+
+		String lva_nummer = request.getParameter("lva_nummer");
+
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+		try {
+			pstm = conn.prepareStatement(query);
+			pstm.setString(1, lva_nummer);
+			rs = pstm.executeQuery();
+	%>
 	<table border=1>
 		<tr>
 			<th>LVA-Nummer</th>
 			<th>Matrikelnummer</th>
 			<th>Note</th>
 		</tr>
-
 		<%
-			// Datenbankverbindung
-			Class.forName("org.sqlite.JDBC");
-			Connection conn = DriverManager.getConnection(
-					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
-
-			String query = "SELECT matrikelnummer, lva_nummer FROM studenten_pruefungsanmeldungen WHERE lva_nummer=? AND pruefung = 'angemeldet'";
-
-			String lva_nummer = request.getParameter("lva_nummer");
-
-			PreparedStatement pstm = null;
-			ResultSet rs = null;
-			try {
-				pstm = conn.prepareStatement(query);
-				pstm.setString(1, lva_nummer);
-				rs = pstm.executeQuery();
-
-				while (rs.next()) {
+			while (rs.next()) {
 		%>
 		<tr>
 			<form method="post" action="beurteilungen_insert.jsp">
@@ -95,6 +97,6 @@
 
 	<br>
 	<br>
-	<a href="main_page.html">Hauptmenü</a>
+	<a href="index.html">Hauptmenü</a>
 </body>
 </html>

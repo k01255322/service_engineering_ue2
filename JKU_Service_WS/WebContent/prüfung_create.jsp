@@ -10,16 +10,8 @@
 </head>
 <body>
 
-	<table border=1>
-		<tr>
-			<th>LVA Titel</th>
-			<th>LVA Nummer</th>
-			<th>Prüfungstermin</th>
-			<th>von</th>
-			<th>bis</th>
-			<th>Hörsaal</th>
-			<th>Anzahl Plätze</th>
-		</tr>
+<h1>Prüfungen anlegen</h1>
+	
 
 		<%
 			//Datenbankverbindung
@@ -46,6 +38,18 @@
 				
 				stmt = conn.createStatement();
 				rs1 = stmt.executeQuery(qRaum);
+				%>
+				<table border=1>
+				<tr>
+					<th>LVA Titel</th>
+					<th>LVA Nummer</th>
+					<th>Prüfungstermin</th>
+					<th>von</th>
+					<th>bis</th>
+					<th>Hörsaal</th>
+					<th>Anzahl Plätze</th>
+				</tr>
+				<%
 				while (rs.next()) {
 		%>
 		
@@ -114,6 +118,6 @@
 
 		<br>
 		<br>
-		<a href="lva_overview.jsp">LVA Übersicht</a>
+		<a href="lva_service.html">Zurück</a>
 </body>
 </html>

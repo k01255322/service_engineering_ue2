@@ -12,16 +12,7 @@
 
 	<h1>LVA-Übersicht</h1>
 
-	<table border=1>
-		<tr>
-			<th>LVA Titel</th>
-			<th>LVA Nummer</th>
-			<th>LVA Leiter</th>
-			<th>Raum</th>
-			<th>Datum</th>
-			<th>Von</th>
-			<th>Bis</th>
-		</tr>
+	
 		<%
 			// Variablen
 			boolean exists = false;
@@ -60,7 +51,18 @@
 					pstmt = conn.prepareStatement(query);
 					pstmt.setString(1, matrikelnummer);
 					rs = pstmt.executeQuery();
-
+					%>
+					<table border=1>
+					<tr>
+						<th>LVA Titel</th>
+						<th>LVA Nummer</th>
+						<th>LVA Leiter</th>
+						<th>Raum</th>
+						<th>Datum</th>
+						<th>Von</th>
+						<th>Bis</th>
+					</tr>
+<%
 					while (rs.next()) {
 		%>
 		<tr>
@@ -79,6 +81,8 @@
 
 		<%
 			}
+				} else {
+					out.println("Bitte eine gültige Matrikelnummer eingeben!");
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -112,7 +116,8 @@
 	</table>
 	<br>
 	<br>
-	<a href="main_page.html">Hauptmenü</a>
+	<a href="lva_service.html">Zurück</a>
+	<a href="index.html">Hauptmenü</a>
 
 </body>
 </html>
