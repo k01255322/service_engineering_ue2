@@ -5,13 +5,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+crossorigin="anonymous">
+ <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
 <title>Beurteilungen eintragen</title>
 </head>
 <body>
+<div class="container">
 
-<h1>Beurteilungen eingtragen</h1>
-
+<h2><span class="badge badge-secondary">Beurteilungen eintragen</span></h2>
+<br>
 	<%
 		// Datenbankverbindung
 		Class.forName("org.sqlite.JDBC");
@@ -59,8 +65,7 @@
 		%>
 	</table>
 	<br>
-	<br>
-	<input type="submit" value="Bestätigen">
+	<button type="submit" class="btn btn-outline-secondary">Bestätigen</button>
 	</form>
 
 
@@ -98,5 +103,6 @@
 	<br>
 	<br>
 	<a href="index.html">Hauptmenü</a>
+	</div>
 </body>
 </html>

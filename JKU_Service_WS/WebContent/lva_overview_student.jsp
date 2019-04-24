@@ -5,13 +5,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+crossorigin="anonymous">
+ <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
 <title>LVAs abrufen</title>
 </head>
 <body>
+<div class="container">
 
-	<h1>LVA-Übersicht</h1>
-
+<h2><span class="badge badge-secondary">LVA-Übersicht</span></h2>
+<br>
 	
 		<%
 			// Variablen
@@ -52,6 +58,8 @@
 					pstmt.setString(1, matrikelnummer);
 					rs = pstmt.executeQuery();
 					%>
+					
+					
 					<table border=1>
 					<tr>
 						<th>LVA Titel</th>
@@ -77,7 +85,7 @@
 				href="lva_sign_out.jsp?lva_nummer=<%=rs.getString(2)%>
 				&matrikelnummer=<%=matrikelnummer%>">Abmelden</a></td>
 		</tr>
-		
+	
 
 		<%
 			}
@@ -115,9 +123,8 @@
 		%>
 	</table>
 	<br>
-	<br>
 	<a href="lva_service.html">Zurück</a>
 	<a href="index.html">Hauptmenü</a>
-
+</div>
 </body>
 </html>

@@ -5,12 +5,20 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+crossorigin="anonymous">
+ <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
 <title>LVA-Anmeldung</title>
+</head>
+<body>
+<div class="container">
 
-<h1>LVA-Anmeldung</h1>
+<h2><span class="badge badge-secondary">LVA-Anmeldung</span></h2>
 
-	
+	<br>
 
 <%
 
@@ -116,13 +124,11 @@
 		
 </table>
 <br>
-<br>
 <a href="lva_service.html">Zurück</a>
 <a href="index.html">Hauptmenü</a>
 
 
-</head>
-<body>
 
+</div>
 </body>
 </html>

@@ -1,47 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
 <title>Anmeldung</title>
 </head>
 <body>
 
-<h1>Anmeldung Student</h1>
+	<div class="container">
 
-<form action="lva_input_student.jsp" method="post">
-		<table border=0>
-		<tr> 
-			<tr> 
-				<td>Marikelnummer:</td>
-				<td><input type="text" name="matrikelnummer"
-					placeholder="z.B. k01255322"></td>
-			</tr>
-		</table>
-<br>
-		<input type="submit" value="LVA-Anmeldung">
-		<input type="submit" formaction="lva_overview_student.jsp" value="LVA-Übersicht">
-	</form>
-	<br>
-	<br>
-	
-	<h1>Anmeldung Lehrender</h1>
+		<h2>
+			<span class="badge badge-secondary">Anmeldung Student</span>
+		</h2>
+		<br>
+		<form action="lva_input_student.jsp" method="post">
+			<table border=0>
+				<tr>
+				<tr>
+					<td>Marikelnummer:</td>
+					<td><input type="text" name="matrikelnummer"
+						placeholder="z.B. k01255322"></td>
+				</tr>
+			</table>
 
-<form action="lva_input.jsp" method="post">
-		<table border=0>
-		<tr> 
-			<tr> 
-				<td>AK-Nummer:</td>
-				<td><input type="text" name="ak_nummer"
-					placeholder="z.B. AK116904"></td>
-			</tr>
-		</table>
-<br>
-		<input type="submit" value="LVA anlegen">
-		<input type="submit" formaction="lva_overview.jsp" value="LVA-Übersicht">
-	</form>
-	<br>
+			<br>
+			<button type="submit" class="btn btn-outline-secondary">LVA-Anmeldung</button>
+			<button type="submit" class="btn btn-outline-secondary"
+				formaction="lva_overview_student.jsp">LVA-Ãœbersicht</button>
+		</form>
+		<br> <br>
 
-	<a href="index.html">Hauptmenü</a>
+		<h2>
+			<span class="badge badge-secondary">Anmeldung Lehrender</span>
+		</h2>
+		<br>
+		<form action="lva_input.jsp" method="post">
+			<table border=0>
+				<tr>
+				<tr>
+					<td>AK-Nummer:</td>
+					<td><input type="text" name="ak_nummer"
+						placeholder="z.B. AK116904"></td>
+				</tr>
+			</table>
+			<br>
+			<button type="submit" class="btn btn-outline-secondary">LVA
+				anlegen</button>
+			<button type="submit" class="btn btn-outline-secondary"
+				formaction="lva_overview.jsp">LVA-Ãœbersicht</button>
+		</form>
+		<br> <a href="index.html">HauptmenÃ¼</a>
+
+	</div>
 
 </body>
 </html>
