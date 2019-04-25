@@ -13,52 +13,58 @@
 <title>Anmeldung</title>
 </head>
 <body>
+	<br>
 
 	<div class="container">
+	
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<a class= "navbar-brand" href="index.html">Hauptmenü</a>
+<a class="navbar-brand" href="lva_service.html">LVA Service</a>
+<a class= "navbar-brand" href="prüfungsservice.html">Prüfungsservice</a>
+<a class="navbar-brand" href="raumservice.html">Raumservice</a>
+<a class= "navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
+</nav>
 
-		<h2>
+<br>
+
+		<h3>
 			<span class="badge badge-secondary">Anmeldung Student</span>
-		</h2>
+		</h3>
 		<br>
 		<form action="lva_input_student.jsp" method="post">
-			<table border=0>
-				<tr>
-				<tr>
-					<td>Marikelnummer:</td>
-					<td><input type="text" name="matrikelnummer"
-						placeholder="z.B. k01255322"></td>
-				</tr>
-			</table>
+			<div class="form-group">
+				<label for="matrikelnummer">Matrikelnummer</label> 
+				<input type="text" class="form-control" name="matrikelnummer" placeholder="z.B. k01255322">
+				<small class="form-text text-muted">Bitte eine gültige
+					Matrikelnummer eingeben.</small>
+			</div>
 
-			<br>
-			<button type="submit" class="btn btn-outline-secondary">LVA-Anmeldung</button>
-			<button type="submit" class="btn btn-outline-secondary"
+			<button type="submit" class="btn btn-outline-secondary btn-sm">LVA-Anmeldung</button>
+			<button type="submit" class="btn btn-outline-secondary btn-sm"
 				formaction="lva_overview_student.jsp">LVA-Übersicht</button>
+
 		</form>
 		<br> <br>
 
-		<h2>
+		<h3>
 			<span class="badge badge-secondary">Anmeldung Lehrender</span>
-		</h2>
+		</h3>
 		<br>
 		<form action="lva_input.jsp" method="post">
-			<table border=0>
-				<tr>
-				<tr>
-					<td>AK-Nummer:</td>
-					<td><input type="text" name="ak_nummer"
-						placeholder="z.B. AK116904"></td>
-				</tr>
-			</table>
-			<br>
-			<button type="submit" class="btn btn-outline-secondary">LVA
+			<div class="form-group">
+				<label for="ak_nummer">AK-Nummer</label> 
+				<input type="text" class="form-control" name="ak_nummer" placeholder="z.B. AK1"> 
+				<small class="form-text text-muted">Bitte eine gültige AK-Nummer
+					eingeben.</small>
+			</div>
+
+			<button type="submit" class="btn btn-outline-secondary btn-sm">LVA
 				anlegen</button>
-			<button type="submit" class="btn btn-outline-secondary"
+			<button type="submit" class="btn btn-outline-secondary btn-sm"
 				formaction="lva_overview.jsp">LVA-Übersicht</button>
 		</form>
-		<br> <a href="index.html">Hauptmenü</a>
 
-	</div>
+
 
 </body>
 </html>

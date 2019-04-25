@@ -1,119 +1,115 @@
+<%@page import="sqliteConnector.sqliteConnection"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="org.sqlite.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
 <title>LVA anlegen</title>
 </head>
 <body>
 
+	<div class="container">
 
-<%
-// Variablen
-boolean exists = false;
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="index.html">Hauptmenü</a> <a
+				class="navbar-brand" href="lva_service.html">LVA Service</a> <a
+				class="navbar-brand" href="prüfungsservice.html">Prüfungsservice</a>
+			<a class="navbar-brand" href="raumservice.html">Raumservice</a> <a
+				class="navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
+		</nav>
 
-//Datenbankverbindung
-Class.forName("org.sqlite.JDBC");
-Connection conn = DriverManager.getConnection(
-		"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
+		<br>
 
-String ak_nummer = request.getParameter("ak_nummer");
+		<%
+			// Variablen
+			boolean exists = false;
 
-String qAk = "SELECT ak_nummer, nachname FROM lehrende_liste";
+			//Datenbankverbindung
+			Connection conn = sqliteConnection.dbConnector();
 
-String lva_leiter = null;
+			String ak_nummer = request.getParameter("ak_nummer");
 
-String qRaum = "SELECT DISTINCT id FROM raeume";
+			String qAk = "SELECT ak_nummer, nachname FROM lehrende_liste";
 
-Statement stmt = null;
+			String lva_leiter = null;
 
-ResultSet rs = null;
+			String qRaum = "SELECT DISTINCT id FROM raeume";
 
-try {
-	stmt = conn.createStatement();
-	rs = stmt.executeQuery(qAk);
+			Statement stmt = null;
 
-	while (rs.next()) {
-		if (rs.getString(1).equals(ak_nummer)) {
-			exists = true;
-			lva_leiter = rs.getString(2);
-			break;
-		}
-	}
-	rs.close();
-	
-	if (exists == true) {
-	
-	stmt = conn.createStatement();
-	rs = stmt.executeQuery(qRaum);
+			ResultSet rs = null;
 
+			try {
+				stmt = conn.createStatement();
+				rs = stmt.executeQuery(qAk);
 
+				while (rs.next()) {
+					if (rs.getString(1).equals(ak_nummer)) {
+						exists = true;
+						lva_leiter = rs.getString(2);
+						break;
+					}
+				}
+				rs.close();
 
-%>
-<h1>Formular zum erstellen einer LVA</h1>
+				if (exists == true) {
 
+					stmt = conn.createStatement();
+					rs = stmt.executeQuery(qRaum);
+		%>
 
+		<h3>
+			<span class="badge badge-secondary">Formular zum erstellen
+				einer LVA</span>
+		</h3>
 
-<form action="lva_insert.jsp" method="post">
-	<table border=0>
-		<tr>
-		<td>LVA-Bezeichnung:</td>
-		<td><input type="text" name="titel" placeholder="z.B. Service Engineering"></td>
-		</tr>
-		<tr>
-		<td>LVA-Nummer:</td>
-		<td><input type="text" name="lva_nummer" placeholder="z.B. 255.255"></td>
-		</tr>
-		<tr>
-		<td>AK-Nummer:</td>
-		<td><input type="text" name="ak_nummer" placeholder=<%=ak_nummer %>></td>
-		</tr>
-		<tr>
-		<td>Max. Anzahl Studierender:</td>
-		<td><input type="text" name="max_studierende" placeholder="z.B. 100"></td>
-		</tr>
-		<tr>
-		<td>Raum:</td>
-		<td><input type="text" name="raum" list="raum" placeholder ="z.B. HS 1">
-		<datalist id="raum">
-					<%while (rs.next()) {%>
-					<option value="<%=rs.getString(1)%>"></option>
-					<%} %>
-					</datalist></td>
-		</tr>
-		<tr>
-		<td>Datum:</td>
-		<td><input type="text" name="datum" placeholder="z.B. 31.12.2019"></td>
-		</tr>
-		<tr>
-		<td>Uhrzeit von:</td>
-		<td><input type="text" name="von" placeholder="z.B. 13:30"></td>
-		</tr>
-		<tr>
-		<td>Uhrzeit bis:</td>
-		<td><input type="text" name="bis" placeholder="z.B. 14:45"></td>
-		</tr>
-		<td>Wöchentliche LVA:</td>
-		<td><input type="checkbox" name="woechentlich"></td>
-		</tr>
-		
-	</table>
-	
-	<input type="submit" value="Einfügen">
-	</form>
-	<%
-			
-			}else {
-				out.println("Bitte eine gültige AK-Nummer eingeben!");
-			}
-} 
-	catch (SQLException e) {
+		<form action="lva_insert.jsp" method="post">
+			<div class="form-group">
+				<label for="titel">LVA Bezeichnung</label> <input type="text"
+					class="form-control" name="titel"
+					placeholder="z.B. Service Engineering"> <label
+					for="lva_nummer">LVA Nummer</label> <input type="text"
+					class="form-control" name="lva_nummer" placeholder="z.B. 255.255">
+				<label for="ak_nummer">AK-Nummer</label> <input type="text"
+					class="form-control" name="ak_nummer" placeholder="z.B. AK1">
+				<label for="max_studierende">Max. Anzahl Studierender</label> <input
+					type="text" class="form-control" name="max_studierende"
+					placeholder="z.B. 100"> <label for="raum">Raum</label> <select
+					class="form-control" name="raum">
+					<%
+						while (rs.next()) {
+					%>
+					<option><%=rs.getString(1)%></option>
+					<%
+						}
+					%>
+				</select> <label for="datum">Datum</label> <input type="text"
+					class="form-control" name="datum" placeholder="z.B. 31.12.2019">
+				<label for="von">Uhrzeit von</label> <input type="text"
+					class="form-control" name="von" placeholder="z.B. 10:00"> <label
+					for="bis">Uhrzeit bis</label> <input type="text"
+					class="form-control" name="bis" placeholder="z.B. 11:30">
+			</div>
+			<button type="submit" class="btn btn-outline-secondary btn-sm">Einfügen</button>
+
+		</form>
+		<%
+			} else {
+					out.println("Bitte eine gültige AK-Nummer eingeben!");
+				}
+			} catch (SQLException e) {
 				e.printStackTrace();
-			} 
-			finally {
+			} finally {
 				if (rs != null) {
 					try {
 						rs.close();
@@ -132,15 +128,13 @@ try {
 				}
 			}
 		%>
-	
-	<br>
-	<br>
-	<a href="lva_service.html">Zurück</a>
-	<a href= "index.html">Hauptmenü</a>
+
+		<br> <br>
 
 
 
 
+	</div>
 
 </body>
 </html>

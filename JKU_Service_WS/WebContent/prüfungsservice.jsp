@@ -1,3 +1,4 @@
+<%@page import="sqliteConnector.sqliteConnection"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="org.sqlite.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -5,12 +6,34 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
 <title>Prüfungsservice</title>
 </head>
 <body>
 
-	<h1>Prüfungsanmeldung</h1>
+<div class="container">
+
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="index.html">Hauptmenü</a> <a
+				class="navbar-brand" href="lva_service.html">LVA Service</a> <a
+				class="navbar-brand" href="prüfungsservice.html">Prüfungsservice</a>
+			<a class="navbar-brand" href="raumservice.html">Raumservice</a> <a
+				class="navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
+
+		</nav>
+		
+		<br>
+
+	<h3>
+			<span class="badge badge-secondary">Prüfungsanmeldung</span>
+		</h3>
 
 	<%
 		// Variablen
@@ -18,9 +41,7 @@
 		boolean existsPrüfung = false;
 
 		//Datenbankverbindung
-		Class.forName("org.sqlite.JDBC");
-		Connection conn = DriverManager.getConnection(
-				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
+		Connection conn = sqliteConnection.dbConnector();
 
 		String matrikelnummer = request.getParameter("matrikelnummer");
 
@@ -59,46 +80,49 @@
 				pstm.setString(1, matrikelnummer);
 				rs = pstm.executeQuery();
 	%>
-	<table border=1>
-		<tr>
-			<th>LVA Bezeichnung</th>
-			<th>LVA Nummer</th>
-			<th>Prüfungsdatum</th>
-			<th>Von</th>
-			<th>Bis</th>
-			<th>Raum</th>
-			<th>max. Teilnehmerzahl</th>
-			<th>Anmeldungen</th>
-		</tr>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">LVA Bezeichnung</th>
+					<th scope="col">LVA Nummer</th>
+					<th scope="col">Prüfungsdatum</th>
+					<th scope="col">Von</th>
+					<th scope="col">Bis</th>
+					<th scope="col">Raum</th>
+					<th scope="col">max. Teilnehmerzahl</th>
+					<th scope="col">Anmeldungen</th>
+				</tr>
+			</thead>
 
-		<%
+			<%
 			while (rs.next()) {
 		%>
-		<tr>
-			<td><%=rs.getString(1)%><br></td>
-			<td><%=rs.getString(2)%><br></td>
-			<td><%=rs.getString(3)%><br></td>
-			<td><%=rs.getString(4)%><br></td>
-			<td><%=rs.getString(5)%><br></td>
-			<td><%=rs.getString(6)%><br></td>
-			<td><%=rs.getString(7)%><br></td>
-			<td><%=rs.getString(8)%><br></td>
+			<tr>
+			<tbody>
+				<td><%=rs.getString(1)%><br></td>
+				<td><%=rs.getString(2)%><br></td>
+				<td><%=rs.getString(3)%><br></td>
+				<td><%=rs.getString(4)%><br></td>
+				<td><%=rs.getString(5)%><br></td>
+				<td><%=rs.getString(6)%><br></td>
+				<td><%=rs.getString(7)%><br></td>
+				<td><%=rs.getString(8)%><br></td>
 
 
-			<%
+				<%
 				if (rs.getString(6).equals(rs.getString(7))) {
 			%>
-			<td>Anmeldung geschlossen</td>
-			<%
+				<td>Anmeldung geschlossen</td>
+				<%
 				} else {
 			%>
 
-
-			<td><a
-				href="prüfungsservice_insert.jsp?lva_nummer=<%=rs.getString(2)%>
+				<td><a class="btn btn-outline-secondary btn-sm"
+					href="prüfungsservice_insert.jsp?lva_nummer=<%=rs.getString(2)%>
 				&matrikelnummer=<%=matrikelnummer%>
-				&lva_titel=<%=rs.getString(1)%>">Anmelden</a></td>
-			<%
+				&lva_titel=<%=rs.getString(1)%>"
+					role="button">Anmelden</a></td>
+				<%
 				}
 
 						}
@@ -146,11 +170,11 @@
 					}
 				}
 			%>
-		
-	</table>
+			
+			<tbody>
+		</table>
+		<br>
 	<br>
-	<br>
-	<a href="prüfungsservice.html">Zurück</a>
-	<a href="index.html">Hauptmenü</a>
+	</div>
 </body>
 </html>

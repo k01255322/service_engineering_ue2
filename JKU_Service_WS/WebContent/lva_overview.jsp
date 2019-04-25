@@ -1,3 +1,4 @@
+<%@page import="sqliteConnector.sqliteConnection"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="org.sqlite.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -5,12 +6,29 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+crossorigin="anonymous">
+ <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
 <title>LVA-Übersicht</title>
 </head>
 <body>
 
-	<h1>Übersicht der LVAs</h1>
+<div class="container">
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<a class= "navbar-brand" href="index.html">Hauptmenü</a>
+<a class="navbar-brand" href="lva_service.html">LVA Service</a>
+<a class= "navbar-brand" href="prüfungsservice.html">Prüfungsservice</a>
+<a class="navbar-brand" href="raumservice.html">Raumservice</a>
+<a class= "navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
+
+</nav>
+<br>
+
+
 
 	
 
@@ -19,9 +37,7 @@
 			boolean exists = false;
 		
 			// Datenbankverbindung
-			Class.forName("org.sqlite.JDBC");
-			Connection conn = DriverManager.getConnection(
-					"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
+				Connection conn = sqliteConnection.dbConnector();
 
 			String ak_nummer = request.getParameter("ak_nummer");
 
@@ -50,20 +66,26 @@
 				pstmt.setString(1, ak_nummer);
 				rs = pstmt.executeQuery();
 				%>
-				<table border=1>
+				<h3><span class="badge badge-secondary">Übersicht der LVAs</span></h3>
+				
+				
+				<table class="table">
+					<thead>
 				<tr>
-					<th>Bezeichnung</th>
-					<th>LVA Nummer</th>
-					<th>LVA Leiter</th>
-					<th>Max. Anzahl Studierender</th>
-					<th>Raum</th>
-					<th>Datum</th>
-					<th>Uhrzeit von</th>
-					<th>Uhrzeit bis</th>
+					<th scope="col">Bezeichnung</th>
+					<th scope="col">LVA Nummer</th>
+					<th scope="col">LVA Leiter</th>
+					<th scope="col">Max. Anzahl Studierender</th>
+					<th scope="col">Raum</th>
+					<th scope="col">Datum</th>
+					<th scope="col">Uhrzeit von</th>
+					<th scope="col">Uhrzeit bis</th>
 				</tr>
+				</thead>
 <%
 				while (rs.next()) {
 		%>
+		<tbody>
 		<tr>
 			<td><%=rs.getString(1)%><br></td>
 			<td><%=rs.getString(2)%><br></td>
@@ -73,13 +95,16 @@
 			<td><%=rs.getString(6)%><br></td>
 			<td><%=rs.getString(7)%><br></td>
 			<td><%=rs.getString(8)%><br></td>
-			<td><a href="lva_edit.jsp?lva_nummer=<%=rs.getString(2)%>">Bearbeiten</a></td>
-			<td><a href="prüfung_create.jsp?lva_nummer=<%=rs.getString(2)%>">Prüfung
-					erstellen</a></td>
-			<td><a href="beurteilungen.jsp?lva_nummer=<%=rs.getString(2)%>">Noten
-					eintragen</a></td>
-			<td><a href="lva_delete.jsp?lva_nummer=<%=rs.getString(2)%>">Löschen</a></td>
+			<td> <a class="btn btn-outline-secondary btn-sm" href="lva_edit.jsp?lva_nummer=<%=rs.getString(2)%>" role="button">Bearbeiten</a>
+			<td> <a class="btn btn-outline-secondary btn-sm" href="prüfung_create.jsp?lva_nummer=<%=rs.getString(2)%>" role="button">Prüfung
+					erstellen</a>
+			<td> <a class="btn btn-outline-secondary btn-sm" href="beurteilungen.jsp?lva_nummer=<%=rs.getString(2)%>" role="button">Noten
+					eintragen</a>
+			<td> <a class="btn btn-outline-secondary btn-sm" href="lva_delete.jsp?lva_nummer=<%=rs.getString(2)%>" role="button">Löschen</a>
+
 		</tr>
+		
+	
 		<%
 			}
 
@@ -116,11 +141,11 @@
 				}
 			}
 		%>
+		</tbody>
 	</table>
 	<br>
 	<br>
-	<a href="lva_service.html">Zurück</a>
-	<a href="index.html">Hauptmenü</a>
+
 
 
 </body>

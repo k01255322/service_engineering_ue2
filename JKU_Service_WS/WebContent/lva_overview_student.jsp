@@ -16,7 +16,17 @@ crossorigin="anonymous">
 <body>
 <div class="container">
 
-<h2><span class="badge badge-secondary">LVA-Übersicht</span></h2>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<a class= "navbar-brand" href="index.html">Hauptmenü</a>
+<a class="navbar-brand" href="lva_service.html">LVA Service</a>
+<a class= "navbar-brand" href="prüfungsservice.html">Prüfungsservice</a>
+<a class="navbar-brand" href="raumservice.html">Raumservice</a>
+<a class= "navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
+
+</nav>
+<br>
+
+
 <br>
 	
 		<%
@@ -59,20 +69,23 @@ crossorigin="anonymous">
 					rs = pstmt.executeQuery();
 					%>
 					
-					
-					<table border=1>
+					<h3><span class="badge badge-secondary">LVA-Übersicht</span></h3>
+					<table class="table">
+					<thead>
 					<tr>
-						<th>LVA Titel</th>
-						<th>LVA Nummer</th>
-						<th>LVA Leiter</th>
-						<th>Raum</th>
-						<th>Datum</th>
-						<th>Von</th>
-						<th>Bis</th>
+						<th scope="col">LVA Titel</th>
+						<th scope="col">LVA Nummer</th>
+						<th scope="col">LVA Leiter</th>
+						<th scope="col">Raum</th>
+						<th scope="col">Datum</th>
+						<th scope="col">Von</th>
+						<th scope="col">Bis</th>
 					</tr>
+					</thead>
 <%
 					while (rs.next()) {
 		%>
+		 <tbody>
 		<tr>
 			<td><%=rs.getString(1)%><br></td>
 			<td><%=rs.getString(2)%><br></td>
@@ -81,12 +94,10 @@ crossorigin="anonymous">
 			<td><%=rs.getString(5)%><br></td>
 			<td><%=rs.getString(6)%><br></td>
 			<td><%=rs.getString(7)%><br></td>
-			<td><a
-				href="lva_sign_out.jsp?lva_nummer=<%=rs.getString(2)%>
-				&matrikelnummer=<%=matrikelnummer%>">Abmelden</a></td>
+			<td><a class="btn btn-outline-secondary btn-sm" href="lva_sign_out.jsp?lva_nummer=<%=rs.getString(2)%>
+				&matrikelnummer=<%=matrikelnummer%>" role="button">Abmelden</a>
 		</tr>
-	
-
+		
 		<%
 			}
 				} else {
@@ -121,10 +132,13 @@ crossorigin="anonymous">
 				}
 			}
 		%>
+		</tbody>
+	
 	</table>
+	
+
 	<br>
-	<a href="lva_service.html">Zurück</a>
-	<a href="index.html">Hauptmenü</a>
+	
 </div>
 </body>
 </html>

@@ -1,3 +1,4 @@
+<%@page import="sqliteConnector.sqliteConnection"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@page import="java.time.format.DateTimeFormatter"%>
@@ -23,9 +24,7 @@ LocalTime bis = LocalTime.parse(request.getParameter("bis"), formatter2);
 String bez = request.getParameter("bez");
 String ort = request.getParameter("ort");
 int maxanzahl = Integer.parseInt(request.getParameter("maxteilnehmer"));
-Class.forName("org.sqlite.JDBC");
-Connection conn = DriverManager.getConnection(
-		"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
+Connection conn = sqliteConnection.dbConnector();
 Statement stat = conn.createStatement();
 String service ="SELECT * FROM veranstaltung" +
                 " WHERE bez='"+bez+"'"+"and datum='"+datum+"' and von='"+von+"' and bis='"+bis+"'and ort='"+ort+"'";

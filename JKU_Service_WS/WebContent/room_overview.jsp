@@ -1,3 +1,4 @@
+<%@page import="sqliteConnector.sqliteConnection"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@page import="java.time.format.DateTimeFormatter"%>
@@ -23,9 +24,7 @@ DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 LocalDate ldatum = LocalDate.parse(request.getParameter("datum"), formatter);
 String datum = ldatum.format(formatter);
 String raum = request.getParameter("raum");
-Class.forName("org.sqlite.JDBC");
-Connection conn = DriverManager.getConnection(
-		"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
+Connection conn = sqliteConnection.dbConnector();
 Statement stat = conn.createStatement();
 String service ="SELECT raum,von,bis FROM raum_service" +
         " WHERE raum='"+raum+"'"+"and datum='"+datum+"'";

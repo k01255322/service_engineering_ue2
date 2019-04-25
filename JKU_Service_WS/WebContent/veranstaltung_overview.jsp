@@ -1,3 +1,4 @@
+<%@page import="sqliteConnector.sqliteConnection"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@page import="java.time.format.DateTimeFormatter"%>
@@ -21,9 +22,8 @@
                <th>Ort</th>
             </tr>
 <% 
-Class.forName("org.sqlite.JDBC");
-Connection conn = DriverManager.getConnection(
-		"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
+Connection conn = sqliteConnection.dbConnector();
+
 Statement stat = conn.createStatement();
 String service ="SELECT * from veranstaltung";
 ResultSet rs1 = stat.executeQuery(service);

@@ -1,3 +1,4 @@
+<%@page import="sqliteConnector.sqliteConnection"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="org.sqlite.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -5,64 +6,80 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
 <title>LVA Abmeldung</title>
 </head>
 <body>
 
 	<%
-		//Datenbankverbindung
-		Class.forName("org.sqlite.JDBC");
-		Connection conn = DriverManager.getConnection(
-				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
-
 		String lva_nummer = request.getParameter("lva_nummer");
 		String matrikelnummer = request.getParameter("matrikelnummer");
+	%>
 
-		String query = "DELETE FROM studenten_lva_anmeldungen WHERE matrikelnummer=? AND lva_nummer=?";
+	<div class="container">
 
-		PreparedStatement pstm = null;
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="index.html">Hauptmenü</a> <a
+				class="navbar-brand" href="lva_service.html">LVA Service</a> <a
+				class="navbar-brand" href="prüfungsservice.html">Prüfungsservice</a>
+			<a class="navbar-brand" href="raumservice.html">Raumservice</a> <a
+				class="navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
+			<a class="navbar-brand"
+				href="lva_overview_student.jsp?matrikelnummer=<%=matrikelnummer%>">Zurück</a>
 
-		try {
-			
+		</nav>
+		<br>
+
+
+		<%
+			//Datenbankverbindung
+			Connection conn = sqliteConnection.dbConnector();
+
+			String query = "DELETE FROM studenten_lva_anmeldungen WHERE matrikelnummer=? AND lva_nummer=?";
+
+			PreparedStatement pstm = null;
+
+			try {
+
 				pstm = conn.prepareStatement(query);
 				pstm.setString(1, matrikelnummer);
 				pstm.setString(2, lva_nummer);
 				pstm.executeUpdate();
 
 				out.println("Abmeldung wurde durchgeführt!");
-			
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			
-			if (pstm != null) {
-				try {
-					pstm.close();
-				} catch (SQLException e) {
-					;
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+
+				if (pstm != null) {
+					try {
+						pstm.close();
+					} catch (SQLException e) {
+						;
+					}
+					pstm = null;
 				}
-				pstm = null;
-			}
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					;
+				if (conn != null) {
+					try {
+						conn.close();
+					} catch (SQLException e) {
+						;
+					}
+					conn = null;
 				}
-				conn = null;
 			}
-		}
-	%>
+		%>
 
-	<br>
-	<br>
-	<a href="lva_overview_student.html">Zurück</a>
-	<a href="index.html">Hauptmenü</a>
-
-
+</div>
 </body>
 </html>

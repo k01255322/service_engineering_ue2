@@ -180,7 +180,8 @@
 
 	<br>
 	<br>
-	<a href="lva_overview.jsp">LVA Übersicht</a>
+	<a href="lva_edit.jsp?lva_nummer=<%=lva_nummer %>">Zurück</a>
+	<a href="index.html">Hauptmenü</a>
 
 </body>
 </html>

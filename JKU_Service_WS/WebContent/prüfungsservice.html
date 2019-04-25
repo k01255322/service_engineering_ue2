@@ -1,35 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
-<title>Prüfungsservice</title>
+<title>PrÃ¼fungsservice</title>
 </head>
 <body>
 
-	<h1>Prüfungsservice</h1>
-	
-	<form action="prüfungsservice.jsp" method="post">
-		<table border=0>
-		<tr> 
-			<tr> 
-				<td>Marikelnummer:</td>
-				<td><input type="text" name="matrikelnummer"
-					placeholder="z.B. k01255322"></td>
-			</tr>
-		</table>
-<br>
-		<input type="submit" value="LVA-Anmeldung">
-		<input type="submit" formaction="prüfungsservice_exams_sign_out.jsp" value="Prüfungsabmeldung">
-		<input type="submit" formaction="prüfungsservice_grades.jsp" value="Notenauskunft">
-	</form>
+	<div class="container">
 
-	<br>
-	<br>
-	<a href="index.html">Hauptmenü</a>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="index.html">HauptmenÃ¼</a> <a
+				class="navbar-brand" href="lva_service.html">LVA Service</a> <a
+				class="navbar-brand" href="prÃ¼fungsservice.html">PrÃ¼fungsservice</a>
+			<a class="navbar-brand" href="raumservice.html">Raumservice</a> <a
+				class="navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
+		</nav>
 
-	
+		<br>
 
+		<h3>
+			<span class="badge badge-secondary">PrÃ¼fungsservice</span>
+		</h3>
 
+		<form action="prÃ¼fungsservice.jsp" method="post">
+			<div class="form-group">
+				<label for="matrikelnummer">Matrikelnummer</label> <input
+					type="text" class="form-control" name="matrikelnummer"
+					placeholder="z.B. k01255322"> <small
+					class="form-text text-muted">Bitte eine gÃ¼ltige
+					Matrikelnummer eingeben.</small>
+			</div>
+			
+			<button type="submit" class="btn btn-outline-secondary btn-sm">PrÃ¼fungsanmeldung</button>
+			<button type="submit" class="btn btn-outline-secondary btn-sm"
+				formaction="prÃ¼fungsservice_exams_sign_out.jsp">PrÃ¼fungsabmeldung</button>
+				<button type="submit" class="btn btn-outline-secondary btn-sm"
+				formaction="prÃ¼fungsservice_grades.jsp">Notenauskunft</button>
+			
+		</form>
 
+		
 </body>
 </html>

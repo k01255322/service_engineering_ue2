@@ -1,3 +1,4 @@
+<%@page import="sqliteConnector.sqliteConnection"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="org.sqlite.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -5,14 +6,32 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
 <title>Noten abrufen</title>
 </head>
 <body>
 
+<div class="container">
 
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="index.html">Hauptmenü</a> <a
+				class="navbar-brand" href="lva_service.html">LVA Service</a> <a
+				class="navbar-brand" href="prüfungsservice.html">Prüfungsservice</a>
+			<a class="navbar-brand" href="raumservice.html">Raumservice</a> <a
+				class="navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
 
-	<h1>Notenauskunft</h1>
+		</nav>
+		
+		<br>
+
+	
 
 
 	<%
@@ -20,9 +39,7 @@
 		boolean exists = false;
 
 		// Datenbankverbindung
-		Class.forName("org.sqlite.JDBC");
-		Connection conn = DriverManager.getConnection(
-				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
+		Connection conn = sqliteConnection.dbConnector();
 
 		String query = "SELECT lva, note FROM beurteilung WHERE matrikelnummer =?";
 
@@ -50,15 +67,22 @@
 				pstmt.setString(1, matrikelnummer);
 				rs = pstmt.executeQuery();
 	%>
-	<table border=1>
+	<h3>
+			<span class="badge badge-secondary">Notenauskunft</span>
+		</h3>
+	
+	<table class="table">
+			<thead>
 		<tr>
-			<th>LVA-Nummer</th>
-			<th>Note</th>
+			<th scope="col">LVA-Nummer</th>
+			<th scope="col">Note</th>
 		</tr>
+		</thead>
 		<%
 			while (rs.next()) {
 		%>
 		<tr>
+		<tbody>
 			<td><%=rs.getString(1)%><br></td>
 			<td><%=rs.getString(2)%><br></td>
 		</tr>
@@ -96,11 +120,9 @@
 				}
 			}
 		%>
+		</tbody>
 	</table>
-	<br>
-	<br>
-	<a href="prüfungsservice.html">Zurück</a>
-	<a href="index.html">Hauptmenü</a>
+</div>
 
 </body>
 </html>
