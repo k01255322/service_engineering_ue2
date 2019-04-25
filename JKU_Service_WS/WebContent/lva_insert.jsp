@@ -34,9 +34,8 @@
 				class="navbar-brand" href="prüfungsservice.html">Prüfungsservice</a>
 			<a class="navbar-brand" href="raumservice.html">Raumservice</a> <a
 				class="navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
-			<a class="navbar-brand"
-				href="lva_input.jsp?ak_nummer=<%=ak_nummer%>">Weitere LVA
-				anlegen</a>
+			<a class="navbar-brand" href="lva_input.jsp?ak_nummer=<%=ak_nummer%>">Weitere
+				LVA anlegen</a>
 		</nav>
 
 		<br>
@@ -48,10 +47,10 @@
 			boolean existsRaum = false;
 			boolean checkGroesse = false;
 			boolean checkDatum = false;
+			boolean checkWoechentlich = false;
 			int raumgroesse = 0;
 
 			// Abfrage der eingegebenen Daten
-
 			String lva_bezeichnung = request.getParameter("titel");
 			String lva_nummer = request.getParameter("lva_nummer");
 			String leiter = null;
@@ -60,6 +59,10 @@
 				String raum = request.getParameter("raum");
 
 				String woechentlich = request.getParameter("woechentlich"); // value = on wenn angekreuzt
+				int woechDb = 0;
+				if (woechentlich.equals("on")) {
+					woechDb = 8; // bedeutet, dass es ein Serientermin ist
+				}
 
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 				LocalDate tempDatum = LocalDate.parse(request.getParameter("datum"), formatter);
@@ -81,7 +84,10 @@
 
 				String qDatum = "SELECT * FROM raum_service";
 
-				String query = "INSERT INTO lva_service(titel, lva_nummer, leiter, max_studierende, raum, datum, von, bis, ak_nummer) VALUES (?,?,?,?,?,?,?,?,?)";
+				String query = "INSERT INTO lva_service(titel, lva_nummer, leiter, max_studierende, raum, datum, von, bis, ak_nummer, woechentlich) VALUES (?,?,?,?,?,?,?,?,?,?)";
+
+				String inRaum = "INSERT INTO raum_service(raum, datum, von, bis, lva_nummer) VALUES (?,?,?,?,?)";
+
 				PreparedStatement pst = null;
 
 				// Prüfung, ob LVA bereits vorhanden	
@@ -117,39 +123,94 @@
 				pst.close();
 
 				rs = stat.executeQuery(qDatum);
-				while (rs.next()) {
-					if ((rs.getObject("datum").toString().equals(datum.toString()))
-							&& (rs.getString("raum").equals(raum))) {
+				// Prüfung auf Terminüberschneidung
+				if (woechDb == 0) {
+					while (rs.next()) {
+						if ((rs.getObject("datum").toString().equals(datum.toString()))
+								&& (rs.getString("raum").equals(raum))) {
 
-						if (rs.getObject("bis").toString().compareTo(von.toString()) > 0) {
+							if (rs.getObject("bis").toString().compareTo(von.toString()) > 0) {
 
-							if ((rs.getObject("von").toString().compareTo(von.toString()) <= 0)
-									&& (rs.getObject("von").toString().compareTo(bis.toString()) <= 0)) {
+								if ((rs.getObject("von").toString().compareTo(von.toString()) <= 0)
+										&& (rs.getObject("von").toString().compareTo(bis.toString()) <= 0)) {
+									out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von")
+											+ " bis " + rs.getObject("bis")
+											+ " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
+									checkDatum = true;
+									break;
+								}
+							}
+							if (rs.getObject("von").toString().compareTo(bis.toString()) > 0) {
+								if ((rs.getObject("bis").toString().compareTo(bis.toString()) <= 0)
+										&& (rs.getObject("bis").toString().compareTo(von.toString()) <= 0)) {
+									out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von")
+											+ " bis " + rs.getObject("bis")
+											+ " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
+									checkDatum = true;
+
+									break;
+
+								}
+							}
+
+							if (((rs.getObject("von").toString().compareTo(von.toString()) > 0)
+									&& (rs.getObject("bis").toString().compareTo(bis.toString())) >= 0)
+									&& (rs.getObject("von").toString().compareTo(bis.toString())) <= 0) {
 								out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von")
 										+ " bis " + rs.getObject("bis")
 										+ " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
 								checkDatum = true;
+								break;
 							}
 						}
-						if (rs.getObject("von").toString().compareTo(bis.toString()) > 0) {
-							if ((rs.getObject("bis").toString().compareTo(bis.toString()) <= 0)
-									&& (rs.getObject("bis").toString().compareTo(von.toString()) <= 0)) {
-								out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von")
-										+ " bis " + rs.getObject("bis")
-										+ " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
-								checkDatum = true;
-								;
-							}
-						}
+					}
+				}
 
-						if (((rs.getObject("von").toString().compareTo(von.toString()) > 0)
-								&& (rs.getObject("bis").toString().compareTo(bis.toString())) > 0)
-								&& (rs.getObject("von").toString().compareTo(bis.toString())) < 0) {
-							out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von")
-									+ " bis " + rs.getObject("bis")
-									+ " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
-							checkDatum = true;
+				// Prüfung auf Überschneidungen bei wiederkehrenden Terminen
+				if (woechDb == 8) {
+					int j = 0;
+					for (int i = 0; i < 8; i++) {
+						while (rs.next()) {
+							if ((rs.getObject("datum").toString().equals(datum.toString()))
+									&& (rs.getString("raum").equals(raum))) {
+
+								if (rs.getObject("bis").toString().compareTo(von.toString()) > 0) {
+
+									if ((rs.getObject("von").toString().compareTo(von.toString()) <= 0)
+											&& (rs.getObject("von").toString().compareTo(bis.toString()) <= 0)) {
+										out.println("Der Raum " + raum + " ist am " + datum + " von "
+												+ rs.getObject("von") + " bis " + rs.getObject("bis")
+												+ " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
+										checkDatum = true;
+										break;
+									}
+								}
+								if (rs.getObject("von").toString().compareTo(bis.toString()) > 0) {
+									if ((rs.getObject("bis").toString().compareTo(bis.toString()) <= 0)
+											&& (rs.getObject("bis").toString().compareTo(von.toString()) <= 0)) {
+										out.println("Der Raum " + raum + " ist am " + datum + " von "
+												+ rs.getObject("von") + " bis " + rs.getObject("bis")
+												+ " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
+										checkDatum = true;
+
+										break;
+
+									}
+								}
+
+								if (((rs.getObject("von").toString().compareTo(von.toString()) > 0)
+										&& (rs.getObject("bis").toString().compareTo(bis.toString())) >= 0)
+										&& (rs.getObject("von").toString().compareTo(bis.toString())) < 0) {
+									out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von")
+											+ " bis " + rs.getObject("bis")
+											+ " Uhr bereits belegt. Die LVA wurde nicht eingetragen!");
+									checkDatum = true;
+									break;
+								}
+							}
 						}
+						j += 7;
+						datum = tempDatum.plusDays(j).format(formatter);
 					}
 				}
 
@@ -165,6 +226,7 @@
 							+ ". Bitte geben Sie eine passende Größe an!");
 				} else if (checkDatum == false) {
 					try {
+
 						pst = conn.prepareStatement(query);
 
 						pst.setString(1, lva_bezeichnung);
@@ -176,12 +238,36 @@
 						pst.setObject(7, von);
 						pst.setObject(8, bis);
 						pst.setString(9, ak_nummer);
+						pst.setInt(10, woechDb);
 
 						pst.executeUpdate();
 
+						pst = conn.prepareStatement(inRaum);
 						// LVA in DB-Tabelle raum_service eintragen
-						response.sendRedirect("book_room.jsp?raum=" + raum + "&datum=" + datum.toString() + "&von="
-								+ von.toString() + "&bis=" + bis.toString());
+						if (woechDb == 8) {
+							int j = 0;
+							for (int i = 0; i < woechDb; i++) {
+								
+								pst.setString(1, raum);
+								pst.setObject(2, datum);
+								pst.setObject(3, von);
+								pst.setObject(4, bis);
+								pst.setString(5, lva_nummer);
+
+								pst.executeUpdate();
+
+								j += 7;
+								datum = tempDatum.plusDays(j).format(formatter);
+							}
+						} else {
+							pst.setString(1, raum);
+							pst.setObject(2, datum);
+							pst.setObject(3, von);
+							pst.setObject(4, bis);
+							pst.setString(5, lva_nummer);
+
+							pst.executeUpdate();
+						}
 
 						out.println("LVA mit der Nummer " + lva_nummer + " und der Bezeichnung " + lva_bezeichnung
 								+ " wurde erfolgreich angelegt!");
@@ -221,6 +307,6 @@
 				out.println("ERROR: Bitte auf Datums- (dd.mm.yyyy) und Zeitformat (HH:MM) achten!");
 			}
 		%>
-		<br> <br>
+	</div>
 </body>
 </html>

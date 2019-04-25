@@ -99,6 +99,11 @@
 					class="form-control" name="von" placeholder="z.B. 10:00"> <label
 					for="bis">Uhrzeit bis</label> <input type="text"
 					class="form-control" name="bis" placeholder="z.B. 11:30">
+					
+					<div class="form-check">
+    <input type="checkbox" class="form-check-input" name="woechentlich" data-toggle="tooltip" data-placement="left" title="8 Wochen">
+    <label class="form-check-label" for="woechentlich">Wöchentliche LVA</label>
+  </div>
 			</div>
 			<button type="submit" class="btn btn-outline-secondary btn-sm">Einfügen</button>
 

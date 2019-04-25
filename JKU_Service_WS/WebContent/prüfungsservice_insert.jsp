@@ -50,8 +50,6 @@
 
 		String query = "INSERT INTO studenten_pruefungsanmeldungen(matrikelnummer, lva_bezeichnung, lva_nummer, pruefung) VALUES (?,?,?, 'angemeldet')";
 
-		//String qUpdate = "UPDATE studenten_pruefungsanmeldungen SET pruefung = 'angemeldet' WHERE matrikelnummer =? AND lva_nummer=?";
-
 		String queryAnmeldungen = "UPDATE pruefungs_service SET anmeldungen = anmeldungen + 1 WHERE lva_nummer=?";
 
 		Statement stm = null;
@@ -73,20 +71,7 @@
 
 			pstm.close();
 			rs.close();
-			/**
-			pstm = conn.prepareStatement(queryAngemeldet);
-			pstm.setString(1, matrikelnummer);
-			pstm.setString(2,lva_nummer);
-			rs = pstm.executeQuery();
-			while (rs.next()) {
-				if (rs.getString(1).equals("abgemeldet")) {
-					abgemeldet = true;
-					break;
-				}
-			}**/
-
-			//pstm = conn.prepareStatement(qLva);
-			//pstm.setString(1, matrikelnummer);
+			
 			stm = conn.createStatement();
 			rs = stm.executeQuery(qLva);
 
@@ -121,23 +106,7 @@
 
 				out.println(
 						"Die Anmeldung zu der Prüfung in " + lva_bezeichnung + " wurde erfolgreich durchgeführt!");
-			} /** if(existsAnmeldung == false && abgemeldet == true && regLva == true) {
-				pstm = conn.prepareStatement(qUpdate);
-				pstm.setString(1, matrikelnummer);
-				pstm.setString(2, lva_nummer);
-				
-				pstm.executeUpdate();
-				
-				
-				pstm.close();
-				
-				pstm = conn.prepareStatement(queryAnmeldungen);
-				pstm.setString(1, lva_nummer);
-				pstm.executeUpdate();
-				
-				out.println(
-						"Die Anmeldung zu der Prüfung in " + lva_bezeichnung + " wurde erfolgreich durchgeführt!");
-				}**/
+			} 
 
 			existsAnmeldung = false;
 

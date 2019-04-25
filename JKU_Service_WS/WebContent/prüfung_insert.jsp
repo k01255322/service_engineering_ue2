@@ -22,7 +22,7 @@
 </head>
 <body>
 
-<div class="container">
+	<div class="container">
 
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<a class="navbar-brand" href="index.html">Hauptmenü</a> <a
@@ -34,166 +34,178 @@
 		</nav>
 		<br>
 
-	<%
-		// Variablen
-		boolean exists = false;
-		boolean existsPrüfung = false;
-		boolean checkDatum = false;
+		<%
+			// Variablen
+			boolean exists = false;
+			boolean existsPrüfung = false;
+			boolean checkDatum = false;
 
-		//Datenbankverbindung
-		Connection conn = sqliteConnection.dbConnector();
+			//Datenbankverbindung
+			Connection conn = sqliteConnection.dbConnector();
 
-		String query = "INSERT INTO pruefungs_service (lva_titel, lva_nummer, datum, von, bis, ort, anzahl_plaetze, anmeldungen) VALUES(?,?,?,?,?, ?,?,0)";
-		String qRaum = "SELECT ID FROM raeume";
-		String qPrüfung = "SELECT lva_nummer FROM pruefungs_service";
-		String qDatum = "SELECT * FROM raum_service";
+			String query = "INSERT INTO pruefungs_service (lva_titel, lva_nummer, datum, von, bis, ort, anzahl_plaetze, anmeldungen) VALUES(?,?,?,?,?, ?,?,0)";
+			String qRaum = "SELECT ID FROM raeume";
+			String qPrüfung = "SELECT lva_nummer FROM pruefungs_service";
+			String qDatum = "SELECT * FROM raum_service";
+			String inRaum = "INSERT INTO raum_service(raum, datum, von, bis, lva_nummer) VALUES (?,?,?,?,?)";
 
-		PreparedStatement pstmt = null;
-		Statement st = null;
-		ResultSet rs = null;
+			PreparedStatement pstmt = null;
+			Statement st = null;
+			ResultSet rs = null;
 
-		String lva_bezeichnung = request.getParameter("titel");
-		String lva_nummer = request.getParameter("lva_nummer");
-		DateTimeFormatter formatter2 = DateTimeFormatter.ISO_LOCAL_TIME;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-		try {
-			LocalTime von = LocalTime.parse(request.getParameter("von"), formatter2);
-			LocalTime bis = LocalTime.parse(request.getParameter("bis"), formatter2);
-			LocalDate tempDatum = LocalDate.parse(request.getParameter("datum"), formatter);
-			String datum = tempDatum.format(formatter);
-			
-			String raum = request.getParameter("raum");
-			int plaetze = Integer.parseInt(request.getParameter("plaetze"));
-
+			String lva_bezeichnung = request.getParameter("titel");
+			String lva_nummer = request.getParameter("lva_nummer");
+			DateTimeFormatter formatter2 = DateTimeFormatter.ISO_LOCAL_TIME;
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 			try {
-				st = conn.createStatement();
-				rs = st.executeQuery(qRaum);
+				LocalTime von = LocalTime.parse(request.getParameter("von"), formatter2);
+				LocalTime bis = LocalTime.parse(request.getParameter("bis"), formatter2);
+				LocalDate tempDatum = LocalDate.parse(request.getParameter("datum"), formatter);
+				String datum = tempDatum.format(formatter);
 
-				while (rs.next()) {
-					if (rs.getString("id").equals(raum)) {
-						exists = true;
-						break;
+				String raum = request.getParameter("raum");
+				int plaetze = Integer.parseInt(request.getParameter("plaetze"));
+
+				try {
+					st = conn.createStatement();
+					rs = st.executeQuery(qRaum);
+
+					while (rs.next()) {
+						if (rs.getString("id").equals(raum)) {
+							exists = true;
+							break;
+						}
 					}
-				}
 
-				rs.close();
+					rs.close();
 
-				rs = st.executeQuery(qPrüfung);
-				while (rs.next()) {
-					if (rs.getString(1).equals(lva_nummer)) {
-						existsPrüfung = true;
-						break;
+					rs = st.executeQuery(qPrüfung);
+					while (rs.next()) {
+						if (rs.getString(1).equals(lva_nummer)) {
+							existsPrüfung = true;
+							break;
+						}
 					}
-				}
 
-				rs.close();
+					rs.close();
 
-				rs = st.executeQuery(qDatum);
-				while (rs.next()) {
-					if ((rs.getObject("datum").toString().equals(datum.toString()))
-							&& (rs.getString("raum").equals(raum))) {
+					rs = st.executeQuery(qDatum);
+					while (rs.next()) {
+						if ((rs.getObject("datum").toString().equals(datum.toString()))
+								&& (rs.getString("raum").equals(raum))) {
 
-						if (rs.getObject("bis").toString().compareTo(von.toString()) > 0) {
+							if (rs.getObject("bis").toString().compareTo(von.toString()) > 0) {
 
-							if ((rs.getObject("von").toString().compareTo(von.toString()) <= 0)
-									&& (rs.getObject("von").toString().compareTo(bis.toString()) <= 0)) {
+								if ((rs.getObject("von").toString().compareTo(von.toString()) <= 0)
+										&& (rs.getObject("von").toString().compareTo(bis.toString()) <= 0)) {
+									out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von")
+											+ " bis " + rs.getObject("bis")
+											+ " Uhr bereits belegt. Die Prüfung wurde nicht eingetragen!");
+									checkDatum = true;
+									break;
+								}
+							}
+							if (rs.getObject("von").toString().compareTo(bis.toString()) > 0) {
+								if ((rs.getObject("bis").toString().compareTo(bis.toString()) <= 0)
+										&& (rs.getObject("bis").toString().compareTo(von.toString()) <= 0)) {
+									out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von")
+											+ " bis " + rs.getObject("bis")
+											+ " Uhr bereits belegt. Die Prüfung wurde nicht eingetragen!");
+									checkDatum = true;
+									break;
+								}
+							}
+
+							if (((rs.getObject("von").toString().compareTo(von.toString()) > 0)
+									&& (rs.getObject("bis").toString().compareTo(bis.toString())) >= 0)
+									&& (rs.getObject("von").toString().compareTo(bis.toString())) < 0) {
 								out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von")
 										+ " bis " + rs.getObject("bis")
 										+ " Uhr bereits belegt. Die Prüfung wurde nicht eingetragen!");
 								checkDatum = true;
+								break;
 							}
-						}
-						if (rs.getObject("von").toString().compareTo(bis.toString()) > 0) {
-							if ((rs.getObject("bis").toString().compareTo(bis.toString()) <= 0)
-									&& (rs.getObject("bis").toString().compareTo(von.toString()) <= 0)) {
-								out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von")
-										+ " bis " + rs.getObject("bis")
-										+ " Uhr bereits belegt. Die Prüfung wurde nicht eingetragen!");
-								checkDatum = true;
-								;
-							}
-						}
-
-						if (((rs.getObject("von").toString().compareTo(von.toString()) > 0)
-								&& (rs.getObject("bis").toString().compareTo(bis.toString())) > 0)
-								&& (rs.getObject("von").toString().compareTo(bis.toString())) < 0) {
-							out.println("Der Raum " + raum + " ist am " + datum + " von " + rs.getObject("von")
-									+ " bis " + rs.getObject("bis")
-									+ " Uhr bereits belegt. Die Prüfung wurde nicht eingetragen!");
-							checkDatum = true;
 						}
 					}
-				}
 
-				rs.close();
+					rs.close();
 
-				if (exists == true && existsPrüfung == false && checkDatum == false) {
-					pstmt = conn.prepareStatement(query);
-					pstmt.setString(1, lva_bezeichnung);
-					pstmt.setString(2, lva_nummer);
-					pstmt.setObject(3, datum);
-					pstmt.setObject(4, von);
-					pstmt.setObject(5, bis);
-					pstmt.setString(6, raum);
-					pstmt.setInt(7, plaetze);
+					if (exists == true && existsPrüfung == false && checkDatum == false) {
+						pstmt = conn.prepareStatement(query);
+						pstmt.setString(1, lva_bezeichnung);
+						pstmt.setString(2, lva_nummer);
+						pstmt.setObject(3, datum);
+						pstmt.setObject(4, von);
+						pstmt.setObject(5, bis);
+						pstmt.setString(6, raum);
+						pstmt.setInt(7, plaetze);
 
-					pstmt.executeUpdate();
+						pstmt.executeUpdate();
 
-					out.println("Prüfung für die LVA " + lva_bezeichnung + " (" + lva_nummer
-							+ ") wurde erfolgreich angelegt!");
-					
-					// LVA in DB-Tabelle raum_service eintragen
-					response.sendRedirect("book_room.jsp?raum="+raum 
-							+ "&datum=" + datum.toString() + "&von="+von.toString() + "&bis=" +bis.toString());
-					
-					
-				} else if (exists == false) {
-					out.println("Der eingegebene Raum (" + raum + ") existiert nicht!");
-				} else {
-					out.println("Für diese LVA (" + lva_nummer + ") wurde bereits eine Prüfung angelegt!");
-				}
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				if (pstmt != null) {
-					try {
 						pstmt.close();
-					} catch (SQLException e) {
-						;
+
+						pstmt = conn.prepareStatement(inRaum);
+						// Prüfung in DB-Tabelle raum_service eintragen
+
+						pstmt.setString(1, raum);
+						pstmt.setObject(2, datum);
+						pstmt.setObject(3, von);
+						pstmt.setObject(4, bis);
+						pstmt.setString(5, lva_nummer);
+
+						pstmt.executeUpdate();
+
+						out.println("Prüfung für die LVA " + lva_bezeichnung + " (" + lva_nummer
+								+ ") wurde erfolgreich angelegt!");
+
+
+					} else if (exists == false) {
+						out.println("Der eingegebene Raum (" + raum + ") existiert nicht!");
+					} else {
+						out.println("Für diese LVA (" + lva_nummer + ") wurde bereits eine Prüfung angelegt!");
 					}
-					pstmt = null;
-				}
-				if (st != null) {
-					try {
-						st.close();
-					} catch (SQLException e) {
-						;
+
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					if (pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (SQLException e) {
+							;
+						}
+						pstmt = null;
 					}
-					pstmt = null;
-				}
-				if (rs != null) {
-					try {
-						rs.close();
-					} catch (SQLException e) {
-						;
+					if (st != null) {
+						try {
+							st.close();
+						} catch (SQLException e) {
+							;
+						}
+						pstmt = null;
 					}
-					pstmt = null;
-				}
-				if (conn != null) {
-					try {
-						conn.close();
-					} catch (SQLException e) {
-						;
+					if (rs != null) {
+						try {
+							rs.close();
+						} catch (SQLException e) {
+							;
+						}
+						pstmt = null;
 					}
-					conn = null;
+					if (conn != null) {
+						try {
+							conn.close();
+						} catch (SQLException e) {
+							;
+						}
+						conn = null;
+					}
 				}
+			} catch (DateTimeParseException ex) {
+				out.println("ERROR: Bitte auf Datums- (dd.mm.yyyy) und Zeitformat (HH:MM) achten!");
 			}
-		} catch (DateTimeParseException ex) {
-			out.println("ERROR: Bitte auf Datums- (dd.mm.yyyy) und Zeitformat (HH:MM) achten!");
-		}
-	%>
-</div>
+		%>
+	</div>
 	<br>
 	<br>
 
