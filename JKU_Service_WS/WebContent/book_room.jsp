@@ -5,6 +5,7 @@
 <%@page import="java.time.LocalTime"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="org.sqlite.*"%>
+<%@page import="sqliteConnector.sqliteConnection"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,8 +23,7 @@
 		LocalTime bis = LocalTime.parse(request.getParameter("bis"), formatter2);
 		String raum = request.getParameter("raum");
 		Class.forName("org.sqlite.JDBC");
-		Connection conn = DriverManager.getConnection(
-				"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
+		Connection conn = sqliteConnection.dbConnector();
 		Statement stat = conn.createStatement();
 		String qRaum = "SELECT * FROM raeume";
 		String service = "SELECT * FROM raum_service" + " WHERE raum='" + raum + "'" + "and datum='" + datum

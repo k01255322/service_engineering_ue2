@@ -24,7 +24,6 @@ crossorigin="anonymous">
 <a class= "navbar-brand" href="prüfungsservice.html">Prüfungsservice</a>
 <a class="navbar-brand" href="raumservice.html">Raumservice</a>
 <a class= "navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
-
 </nav>
 <br>
 

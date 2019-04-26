@@ -6,18 +6,35 @@
     <%@ page import="java.sql.*"%>
     <%@ page import="org.sqlite.*"%>
     <%@ page import="java.util.*"%>
+    <%@page import="sqliteConnector.sqliteConnection"%>
 
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
 <title>Raum Suche</title>
 </head>
 <body>
-<table width = "100%" border = "1" align = "center">
+<div class="container">
+
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="index.html">Hauptmenü</a> <a
+				class="navbar-brand" href="lva_service.html">LVA Service</a> <a
+				class="navbar-brand" href="prüfungsservice.html">Prüfungsservice</a>
+			<a class="navbar-brand" href="raumservice.html">Raumservice</a> <a
+				class="navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
+		</nav>
+<table class="table">
             <tr bgcolor = "#949494">
-               <th>Raum</th>
-               <th>max Personen</th>
+               <th scope="col">Raum</th>
+               <th scope="col">max Personen</th>
             </tr>
             <%
             
@@ -38,8 +55,7 @@
             	     maxanzahl = 0;
                }
                Class.forName("org.sqlite.JDBC");
-               Connection conn = DriverManager.getConnection(
-               		"jdbc:sqlite:c:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2\\ue2.db");
+               Connection conn = sqliteConnection.dbConnector();
                Statement stat = conn.createStatement();
                String qRaum = "SELECT * FROM raeume";
                
@@ -74,10 +90,10 @@
             		   if(found==false){
  
             			   
-            			   
+            			   String raum = rs2.getString(1).replaceAll(" ", "%20");
             			   out.print("<tr><td>" + rs2.getString(1) + "</td>\n");
             			   out.println("<td> " + rs2.getString(2) + "</td>\n");
-            			   out.println("<td> <a href=book_room.jsp?raum="+rs2.getString(1)+"&datum="+datum+"&von="+von+"&bis="+bis
+            			   out.println("<td> <a href=book_room.jsp?raum="+raum+"&datum="+datum+"&von="+von+"&bis="+bis
             					   +"> Buchen</a></td></tr>\n");
             			   
             			   
@@ -139,6 +155,6 @@
                
             %>
          </table>
-  
+ </div>
 </body>
 </html>
