@@ -14,39 +14,26 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
-<title>LVA löschen</title>
+<title>Veranstaltung löschen</title>
 </head>
 <body>
 
 <div class="container">
-
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-			<a class="navbar-brand" href="index.html">Hauptmenü</a> <a
-				class="navbar-brand" href="lva_service.html">LVA Service</a> <a
-				class="navbar-brand" href="prüfungsservice.html">Prüfungsservice</a>
-			<a class="navbar-brand" href="raumservice.html">Raumservice</a> <a
-				class="navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
-
-		</nav>
-		
 		<br>
 <% 
 //Datenbankverbindung
 			Class.forName("org.sqlite.JDBC");
 			Connection conn = sqliteConnection.dbConnector();
-			String query = "DELETE FROM lva_service WHERE lva_nummer=?";
-
+			String id = request.getParameter("id");
+			String query = "DELETE FROM veranstaltung WHERE ID=?";
 			PreparedStatement pstmt = null;
-			
-			String lva_bezeichnung = request.getParameter("titel");
-			String lva_nummer = request.getParameter("lva_nummer");
 			
 			try {
 				pstmt = conn.prepareStatement(query);
-				pstmt.setString(1, lva_nummer);
+				pstmt.setString(1, id);
 				pstmt.executeUpdate();
 				
-				out.println("Die LVA " + lva_bezeichnung + " mit der Nummer " + lva_nummer + " wurde erfolgreich gelöscht!");
+				out.println("Die Veranstaltung wurde erfolgreich gelöscht!");
 			} catch(SQLException e) {
 			      out.println("Error: " + e.getMessage());
 			      e.printStackTrace();

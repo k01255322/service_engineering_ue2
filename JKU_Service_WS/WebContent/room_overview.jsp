@@ -47,14 +47,15 @@ String datum = ldatum.format(formatter);
 String raum = request.getParameter("raum");
 Connection conn = sqliteConnection.dbConnector();
 Statement stat = conn.createStatement();
-String service ="SELECT raum,von,bis FROM raum_service" +
+String service ="SELECT raum,von,bis,ID FROM raum_service" +
         " WHERE raum='"+raum+"'"+"and datum='"+datum+"'";
 ResultSet rs1 = stat.executeQuery(service);
 
 
 while (rs1.next()) {
 		   out.print("<tr><td>" + rs1.getString(1) + "</td>\n"); 
-		   out.println("<td> " + rs1.getString(2) + "-"+rs1.getString(3)+"</td></tr>\n");
+		   out.println("<td> " + rs1.getString(2) + "-"+rs1.getString(3)+"</td>\n");
+		   out.println("<td> <a href=room_delete.jsp?id="+rs1.getString(4)+"> Löschen</a></td></tr>\n");
 }
 
 

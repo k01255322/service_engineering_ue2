@@ -29,33 +29,23 @@
 				class="navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
 		</nav>
 <h3>
-			<span class="badge badge-secondary">Alle Veranstaltungen </span>
+			<span class="badge badge-secondary">Teilnehmerliste </span>
 		</h3>
 <table class="table table-borderless"style="border-collapse: collapse;display: block;">
             <tr bgcolor = "#949494">
-               <th>Bezeichnung</th>
-               <th>Datum</th>
-               <th>Uhrzeit</th>
-               <th>Ort</th>
+               <th>Vorname</th>
+               <th>Nachname</th>
             </tr>
 <% 
 Connection conn = sqliteConnection.dbConnector();
-String test = "";
 Statement stat = conn.createStatement();
-String service ="SELECT * from veranstaltung";
+String vid = request.getParameter("vid");
+String service ="SELECT * from teilnehmer_liste where veranstaltung='"+vid+"'";
 ResultSet rs1 = stat.executeQuery(service);
-
-
 while (rs1.next()) {
-	        test = rs1.getString(2);
 		   out.print("<tr><td>" + rs1.getString(2) + "</td>\n");
 		   out.print("<td>" + rs1.getString(3) + "</td>\n"); 
-		   out.println("<td> " + rs1.getString(4) + "-"+rs1.getString(5)+"</td>\n");
-		   out.print("<td>" + rs1.getString(7) + "</td>\n");
-		   out.println("<td> <a href=veranstaltung_ändern.jsp?id="+rs1.getString(1)+"> Edit</a></td>\n");
-		   out.println("<td> <a href=veranstaltung_delete.jsp?id="+rs1.getString(1)+"> Delete</a></td>\n");
-		   out.println("<td> <a href=teilnehmen.jsp?vid="+rs1.getString(1)+"> Teilnehmen</a></td>\n");
-		   out.println("<td> <a href=teilnehmerliste.jsp?vid="+rs1.getString(1)+"> Teilnehmerliste</a></td></tr>\n");
+		   out.println("<td> <a href=teilnehmer_delete.jsp?id="+rs1.getString(1)+"> Abmelden</a></td></tr>\n");
 }
 
 

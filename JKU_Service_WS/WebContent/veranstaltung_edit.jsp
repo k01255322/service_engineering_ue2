@@ -9,8 +9,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Veranstaltung Ändern</title>
 </head>
 <body>
 <%
@@ -21,17 +28,18 @@ LocalTime von,bis;
 von = null;
 bis = null;
 DateTimeFormatter formatter2 = DateTimeFormatter.ISO_LOCAL_TIME;
+int maxanzahl = 0;
 try{
 LocalDate ldatum = LocalDate.parse(request.getParameter("datum"), formatter);
  datum = ldatum.format(formatter);
  von = LocalTime.parse(request.getParameter("von"), formatter2);
  bis = LocalTime.parse(request.getParameter("bis"), formatter2);
+ maxanzahl = Integer.parseInt(request.getParameter("maxteilnehmer"));
 }
 catch(Exception e){};
 String id = request.getParameter("id");
 String bez = request.getParameter("bez");
 String ort = request.getParameter("ort");
-int maxanzahl = Integer.parseInt(request.getParameter("maxteilnehmer"));
 Connection conn = sqliteConnection.dbConnector();
 Statement stat = conn.createStatement();
 String service ="SELECT * FROM veranstaltung" +
@@ -58,7 +66,7 @@ if (ort != null) {
 		pst = conn.prepareStatement(query);
 
 
-		if (bez!= null) {
+		if (bez!= null && !bez.isBlank()) {
 			pst.setString(1, bez);
 		} else {
 			pst.setString(1,rs.getString(2));
@@ -95,7 +103,8 @@ if (ort != null) {
 		pst.executeUpdate();
 
 		out.println("Die Veranstaltung wurde erfolgreich geändert");
-		out.println("<a href=index.html>Zurück zur Startseite</a>");
+		out.println("<br>");
+		out.println("<a href=index.html class="+"list-group-item list-group-item-action"+">Zurück zur Startseite</a>");
 		
 
 	} catch (SQLException e) {

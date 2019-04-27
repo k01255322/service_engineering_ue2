@@ -9,29 +9,35 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="ISO-8859-1">
-<title>Veranstaltungs Service</title>
+<title>Teilnahme</title>
 </head>
 <body>
 <div class="container">
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-			<a class="navbar-brand" href="index.html">HauptmenÃ¼</a> <a
+			<a class="navbar-brand" href="index.html">Hauptmenü</a> <a
 				class="navbar-brand" href="lva_service.html">LVA Service</a> <a
-				class="navbar-brand" href="prÃ¼fungsservice.html">PrÃ¼fungsservice</a>
+				class="navbar-brand" href="prüfungsservice.html">Prüfungsservice</a>
 			<a class="navbar-brand" href="raumservice.html">Raumservice</a> <a
 				class="navbar-brand" href="veranstaltungsservice.html">Veranstaltungsservice</a>
 		</nav>
-		<h3>
-			<span class="badge badge-secondary">Veranstaltungs Service der JKU</span>
-		</h3>
+<form action="teilnahme.jsp" method="post">
+     <input type="hidden" name="vid" value= <%= request.getParameter("vid")%> >
+	<table table class="table table-borderless" style="border-collapse: collapse;display: block;" >
+	    <tr>
+		<td>Vorname:</td>
+		<td><input type="text" name="vname" placeholder ="Vorname"></td>
+		</tr>
+		<tr>
+		<td>Nachname:</td>
+		<td><input type="text" name="nname" placeholder="Nachname"></td>
+		</tr>
+		
+	</table>
+	
+	<input class="btn btn-primary" type="submit" value="teilnehmen">
+	</form>
+	<br>
 
-   <div class="list-group">
-	<a href ="veranstaltung_anlegen.html" class="list-group-item list-group-item-action">Veranstaltung anlegen</a>
-	<br>
-	<a href ="veranstaltung_overview.jsp" class="list-group-item list-group-item-action">Veranstaltungsliste </a>
-	<br>
-	</div>
-	<br>
-	<br>
 </div>
 </body>
 </html>
