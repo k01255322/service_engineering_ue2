@@ -2,7 +2,8 @@ package sqliteConnector;
 import java.sql.*;
 
 public class sqliteConnection {
-	static String url = "jdbc:sqlite:C:\\Users\\simon\\Documents\\Vorlesungen\\ServiceEngineering\\service_engineering_ue2\\ue2.db";
+	static String url = "jdbc:sqlite:C:\\Users\\sSTBXg2nYT\\Desktop\\GoogleDrive\\JKU\\Wirtschaftsinformatik\\5. - SS 19\\KV - Service Engineering\\UE2" + 
+			"\\ue2.db";
 	static String driverName = "org.sqlite.JDBC";
 	static Connection conn = null;
 	

@@ -1,3 +1,4 @@
+
 <%@page import="sqliteConnector.sqliteConnection"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -66,7 +67,7 @@ if (ort != null) {
 		pst = conn.prepareStatement(query);
 
 
-		if (bez!= null && !bez.isBlank()) {
+		if (bez!= null && !bez.isEmpty()) {
 			pst.setString(1, bez);
 		} else {
 			pst.setString(1,rs.getString(2));
